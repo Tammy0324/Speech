@@ -22,35 +22,151 @@ class MyApp extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      child: Row(
-        children: <Widget>[
-          RaisedButton(
-            onPressed: (){},
-            child: Text('練習'),
-          ),
-          RaisedButton(
-            onPressed: (){},
-            child: Text('測驗'),
-          ),
-          RaisedButton(
-            onPressed: (){},
-            child: Text('單字卡'),
-          ),
-          RaisedButton(
-            onPressed: (){},
-            child: Text('設定'),
-          ),
-        ],
-      )
+    return Center(
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => exePage())
+                );
+              },
+              child: Text('練習'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => quizPage())
+                );
+              },
+              child: Text('測驗'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => vocPage())
+                );
+              },
+              child: Text('單字卡'),
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => settingPage())
+                );
+              },
+              child: Text('設定'),
+            ),
+          ],
+        )
     );
   }
+}
 
-  void btnClickEvent() {
-    print('btnClickEvent');
+class exePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('練習'),
+      ),
+      body: exePageBody(),
+    );
   }
-  void btnClickEvent2() {
-    print('btnClickEvent2');
+}
+
+class exePageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+        child: Text('返回主頁'),
+      ),
+    );
+  }
+}
+
+class quizPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('測驗'),
+      ),
+      body: exePageBody(),
+    );
+  }
+}
+
+class quizPageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+        child: Text('返回主頁'),
+      ),
+    );
+  }
+}
+
+class vocPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('單字卡'),
+      ),
+      body: exePageBody(),
+    );
+  }
+}
+
+class vocPageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+        child: Text('返回主頁'),
+      ),
+    );
+  }
+}
+
+class settingPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('設定'),
+      ),
+      body: exePageBody(),
+    );
+  }
+}
+
+class settingPageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RaisedButton(
+        onPressed: (){
+          Navigator.pop(context);
+        },
+        child: Text('返回主頁'),
+      ),
+    );
   }
 }
