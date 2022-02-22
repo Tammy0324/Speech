@@ -1,32 +1,56 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  return runApp(MaterialApp(home: new HomePage(),));
+  runApp(MyApp());
 
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build (BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('主頁'),
+        ),
+        body: HomePage(),
+      ),
+    );
+  }
 }
 
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: new AppBar(
-          title: Text('MyApp Demo')
-        ),
-        body: Row(
-          children: <Widget>[
-            Container(
-              color: Colors.blueAccent,
-              width: 100,
-              height: 100,
-            ),
-            Container(
-              color: Colors.red,
-              width: 100,
-              height: 100,
-              margin: EdgeInsets.all(10.0),
-            )
-          ]
-        )
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Row(
+        children: <Widget>[
+          RaisedButton(
+            onPressed: (){},
+            child: Text('練習'),
+          ),
+          RaisedButton(
+            onPressed: (){},
+            child: Text('測驗'),
+          ),
+          RaisedButton(
+            onPressed: (){},
+            child: Text('單字卡'),
+          ),
+          RaisedButton(
+            onPressed: (){},
+            child: Text('設定'),
+          ),
+        ],
+      )
     );
+  }
+
+  void btnClickEvent() {
+    print('btnClickEvent');
+  }
+  void btnClickEvent2() {
+    print('btnClickEvent2');
   }
 }
