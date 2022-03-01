@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MyApp());
@@ -80,9 +82,23 @@ class exePage extends StatelessWidget {
 }
 
 class exePageBody extends StatelessWidget {
+  final String host = 'http://127.0.0.1:8000';
+  String article = "";
+  getData() async {
+    http.get(Uri.parse(host)).then((article) {
+      setState(() {
+        article.body;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Center(
+      child: ListView.builder(
+          itemCount: artical.length,
+          itemBuilder: (context, idx) {
+
+      });
       child: RaisedButton(
         onPressed: (){
           Navigator.pop(context);
