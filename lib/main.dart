@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 void main() {
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -82,29 +83,29 @@ class exePage extends StatelessWidget {
 }
 
 class exePageBody extends StatelessWidget {
-  final String host = 'http://127.0.0.1:8000';
-  String article = "";
-  getData() async {
-    http.get(Uri.parse(host)).then((article) {
-      setState(() {
-        article.body;
-      });
-    });
+  var client = HttpClient();
+  var article = "";
+  getArticle () async {
+    var request = await client.getUrl(
+      Uri.https('127.0.0.1:8000','/')
+    );
+    var response = await request.close();
+    article = await response.join();
   }
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ListView.builder(
-          itemCount: artical.length,
-          itemBuilder: (context, idx) {
-
-      });
-      child: RaisedButton(
-        onPressed: (){
-          Navigator.pop(context);
-        },
-        child: Text('返回主頁'),
-      ),
+      child: Column(
+        children: <Widget>[
+          Text(article),
+          RaisedButton(
+            onPressed: (){
+              Navigator.pop(context);
+            },
+            child: Text('返回主頁'),
+          ),
+        ]
+      )
     );
   }
 }
