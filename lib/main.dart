@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -70,45 +69,113 @@ class HomePage extends StatelessWidget {
   }
 }
 
+// class exePageState extends StatefulWidget {
+//   @override
+//   exePage createState() => exePage();
+// }
+
 class exePage extends StatelessWidget {
+  var article = "Sara is hungry. She goes to the kitchen. "
+      "She opens the cabinet. There are a lot of snacks. "
+      "The marshmallows are too sweet. "
+      "The potato chips are too salty. "
+      "The ice cream is too watery. "
+      "The kiwis are too sour. The cereal is too bland. "
+      "Her dad comes home. He gives her crackers. The crackers are perfect.";
+  IconData micicon = Icons.mic_outlined;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('練習'),
       ),
-      body: exePageBody(),
+      body:
+        Column(
+          children: <Widget>[
+            Text(article),
+            Row(
+              children: <Widget>[
+                ElevatedButton.icon(
+                  icon: Icon(Icons.headphones_outlined,),
+                  label: Text(""),
+                  onPressed: sound,
+                ),
+                ElevatedButton.icon(
+                  icon: Icon(micicon),
+                  label: Text(""),
+                  onPressed: () {
+                    print('Mic');
+                    // setState(() {
+                    //   if (micicon == Icons.mic_outlined)
+                    //     micicon = Icons.stop_circle_outlined;
+                    //   else
+                    //     micicon = Icons.mic_outlined;
+                    // });
+                  },
+                )
+               ],
+            )
+          ]
+        )
     );
+  }
+  void sound() {
+    print('Speech');
   }
 }
 
-class exePageBody extends StatelessWidget {
-  var client = HttpClient();
-  var article = "";
-  getArticle () async {
-    var request = await client.getUrl(
-      Uri.https('127.0.0.1:8000','/')
-    );
-    var response = await request.close();
-    article = await response.join();
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: <Widget>[
-          Text(article),
-          RaisedButton(
-            onPressed: (){
-              Navigator.pop(context);
-            },
-            child: Text('返回主頁'),
-          ),
-        ]
-      )
-    );
-  }
-}
+// class exePageBody extends State<exePageBodyState> {
+// var client = HttpClient();
+//   var article = "Sara is hungry. She goes to the kitchen. "
+//       "She opens the cabinet. There are a lot of snacks. "
+//       "The marshmallows are too sweet. "
+//       "The potato chips are too salty. "
+//       "The ice cream is too watery. "
+//       "The kiwis are too sour. The cereal is too bland. "
+//       "Her dad comes home. He gives her crackers. The crackers are perfect.";
+// getArticle () async {
+//   var request = await client.getUrl(
+//     Uri.https('127.0.0.1:8000','/')
+//   );
+//   var response = await request.close();
+//   article = await response.join();
+// }
+//   @override
+//   Widget build(BuildContext context) {
+//     IconData micicon = Icons.mic_outlined;
+//     return Center(
+//       child: Column(
+//         children: <Widget>[
+//           Text(article),
+//           Row(
+//             children: <Widget>[
+//               ElevatedButton.icon(
+//                 icon: Icon(Icons.headphones_outlined,),
+//                 label: Text(""),
+//                 onPressed: sound,
+//               ),
+//               ElevatedButton.icon(
+//                 icon: Icon(micicon),
+//                 label: Text(""),
+//                 onPressed: () {
+//                   setState(() {
+//                     if (micicon == Icons.mic_outlined)
+//                       micicon = Icons.stop_circle_outlined;
+//                     else
+//                       micicon = Icons.mic_outlined;
+//                   });
+//               },
+//               )
+//             ],
+//           )
+//         ]
+//       )
+//     );
+//   }
+//   void sound() {
+//     print('Speech');
+//   }
+// }
 
 class quizPage extends StatelessWidget {
   @override
@@ -117,7 +184,7 @@ class quizPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('測驗'),
       ),
-      body: exePageBody(),
+      body: quizPageBody(),
     );
   }
 }
@@ -126,12 +193,6 @@ class quizPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: RaisedButton(
-        onPressed: (){
-          Navigator.pop(context);
-        },
-        child: Text('返回主頁'),
-      ),
     );
   }
 }
@@ -143,7 +204,7 @@ class vocPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('單字卡'),
       ),
-      body: exePageBody(),
+      body: vocPageBody(),
     );
   }
 }
@@ -152,12 +213,6 @@ class vocPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: RaisedButton(
-        onPressed: (){
-          Navigator.pop(context);
-        },
-        child: Text('返回主頁'),
-      ),
     );
   }
 }
@@ -169,7 +224,7 @@ class settingPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('設定'),
       ),
-      body: exePageBody(),
+      body: settingPageBody(),
     );
   }
 }
@@ -178,12 +233,6 @@ class settingPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: RaisedButton(
-        onPressed: (){
-          Navigator.pop(context);
-        },
-        child: Text('返回主頁'),
-      ),
     );
   }
 }
