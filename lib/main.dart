@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -123,6 +124,8 @@ class exePage extends StatelessWidget {
   }
   void sound() {
     print('Speech');
+    AudioCache player = AudioCache();
+    player.play('fastapi-master/fastapi-master/tests/voice/example.mp3');
   }
 }
 
