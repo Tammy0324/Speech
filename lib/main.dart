@@ -77,14 +77,7 @@ class HomePage extends StatelessWidget {
 // }
 
 class exePage extends StatelessWidget {
-  var article = "Sara is hungry. "; //範例文章
-      // "She goes to the kitchen. "
-      // "She opens the cabinet. There are a lot of snacks. "
-      // "The marshmallows are too sweet. "
-      // "The potato chips are too salty. "
-      // "The ice cream is too watery. "
-      // "The kiwis are too sour. The cereal is too bland. "
-      // "Her dad comes home. He gives her crackers. The crackers are perfect.";
+  var article = "The teacher announces that there is a test. "; //範例文章
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
   @override
