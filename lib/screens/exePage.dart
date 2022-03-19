@@ -16,7 +16,6 @@ class AudioSession extends StatefulWidget {
 
 class _AudioSessionState extends State<AudioSession> {
   int _selectedBottomBarItemIndex = 0;
-  bool _isPlaying = false;
 
   void _onBottomBarItemTapped(int index) {
     setState(() {
@@ -29,7 +28,6 @@ class _AudioSessionState extends State<AudioSession> {
   AudioPlayer player = AudioPlayer();
 
   FlutterSound flutterSound = new FlutterSound();
-  var _playerSubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +76,8 @@ class _AudioSessionState extends State<AudioSession> {
                       icon: const Icon(Icons.record_voice_over),
                       iconSize: 38,
                       color: Colors.white,
-                      onPressed: () async{
-                        String path = await flutterSound.startPlayer(null);
-                        _playerSubscription = flutterSound.onPlayerStateChanged.listen((e) {
-                          if (e != null) {
-                            DateTime date = new DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
-                            // String txt = DateFormat(‘mm:ss:SS’, ‘en_US’).format(date);
-                            this.setState(() {
-                              this._isPlaying = true;
-                              // this._playerTxt = txt.substring(0, 8);
-                            });
-                          }
-                        });
+                      onPressed: () {
+                        _onBottomBarItemTapped(1);
                       },
                     ),
                   ),
