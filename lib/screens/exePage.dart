@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 //import 'package:project/models/audio_rec.dart';
 
 class AudioSession extends StatefulWidget {
@@ -26,8 +25,6 @@ class _AudioSessionState extends State<AudioSession> {
   var article = "The teacher announces that there is a test. "; //範例文章
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
-
-  FlutterSound flutterSound = new FlutterSound();
 
   @override
   Widget build(BuildContext context) {
