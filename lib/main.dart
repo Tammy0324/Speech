@@ -86,6 +86,7 @@ class exePage extends StatelessWidget {
       // "The kiwis are too sour. The cereal is too bland. "
       // "Her dad comes home. He gives her crackers. The crackers are perfect.";
   IconData micicon = Icons.mic_outlined;
+  AudioPlayer player = AudioPlayer();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,8 +125,7 @@ class exePage extends StatelessWidget {
   }
   void sound() {
     print('Speech');
-    AudioCache player = AudioCache();
-    player.play('fastapi-master/fastapi-master/tests/voice/example.mp3');
+    player.play('voice/example.mp3');
   }
 }
 
