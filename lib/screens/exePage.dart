@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 //import 'package:project/models/audio_rec.dart';
 
 class AudioSession extends StatefulWidget {
@@ -15,6 +16,7 @@ class AudioSession extends StatefulWidget {
 
 class _AudioSessionState extends State<AudioSession> {
   int _selectedBottomBarItemIndex = 0;
+  bool _isPlaying = false;
 
   void _onBottomBarItemTapped(int index) {
     setState(() {
@@ -25,6 +27,9 @@ class _AudioSessionState extends State<AudioSession> {
   var article = "The teacher announces that there is a test. "; //範例文章
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
+
+  FlutterSound flutterSound = new FlutterSound();
+  var _playerSubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -73,8 +78,18 @@ class _AudioSessionState extends State<AudioSession> {
                       icon: const Icon(Icons.record_voice_over),
                       iconSize: 38,
                       color: Colors.white,
-                      onPressed: () {
-                        _onBottomBarItemTapped(1);
+                      onPressed: () async{
+                        String path = await flutterSound.startPlayer(null);
+                        _playerSubscription = flutterSound.onPlayerStateChanged.listen((e) {
+                          if (e != null) {
+                            DateTime date = new DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
+                            // String txt = DateFormat(‘mm:ss:SS’, ‘en_US’).format(date);
+                            this.setState(() {
+                              this._isPlaying = true;
+                              // this._playerTxt = txt.substring(0, 8);
+                            });
+                          }
+                        });
                       },
                     ),
                   ),
