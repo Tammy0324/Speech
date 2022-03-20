@@ -11,13 +11,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build (BuildContext context) {
     return MaterialApp(
-      title: '主頁',
+      title: 'Home',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(title: '主頁'),
+        '/': (context) => HomePage(title: 'Demo'),
         '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
       },
     );

@@ -15,6 +15,8 @@ class AudioSession extends StatefulWidget {
 
 class _AudioSessionState extends State<AudioSession> {
   int _selectedBottomBarItemIndex = 0;
+  bool recordClick = true;
+  bool playClick = true;
 
   void _onBottomBarItemTapped(int index) {
     setState(() {
@@ -50,10 +52,10 @@ class _AudioSessionState extends State<AudioSession> {
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.headphones_outlined),
                       iconSize: 38,
                       color: Colors.white,
-                      onPressed: play,
+                      onPressed:play,
+                      icon: const Icon( Icons.headphones_outlined),
                     ),
                   ),
                   Text(
@@ -70,12 +72,14 @@ class _AudioSessionState extends State<AudioSession> {
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.record_voice_over),
                       iconSize: 38,
                       color: Colors.white,
                       onPressed: () {
-                        _onBottomBarItemTapped(1);
+                        setState(() {
+                          recordClick = !recordClick;
+                        });
                       },
+                      icon: Icon((recordClick == false) ? Icons.stop : Icons.record_voice_over  ),
                     ),
                   ),
                   Text(
