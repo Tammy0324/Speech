@@ -1,5 +1,10 @@
+import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:http/http.dart';
+import 'package:html/parser.dart' show parse;
+import 'package:project/http_service.dart';
+import 'package:project/posts.dart';
 //import 'package:project/models/audio_rec.dart';
 
 class AudioSession extends StatefulWidget {
@@ -24,20 +29,24 @@ class _AudioSessionState extends State<AudioSession> {
     });
   }
 
-  var article = "The teacher announces that there is a test. "; //範例文章
+  var article = "\nThe teacher announces that there is a test. "; //範例文章
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
 
   @override
   Widget build(BuildContext context) {
+    print("exe");
     return Scaffold(
         appBar: AppBar(
           title: Text("練習"),
           // automaticallyImplyLeading: false, // not display <- back btn
         ),
-        body: Container(
-          child: Text(article),
-        ),
+        // debugShowCheckedModeBanner: false,
+        // theme: ThemeData(
+        //   primarySwatch: Colors.blue,
+        //   visualDensity: VisualDensity.adaptivePlatformDensity,
+        // ),
+        body: PostsPage(),
         bottomNavigationBar: Container(
           height: 110,
           padding: const EdgeInsets.only(top: 10.0),
@@ -95,6 +104,6 @@ class _AudioSessionState extends State<AudioSession> {
   }
   void play() {
     print('Speech');
-    player.play('voice/example.mp3');
+    player.play('voice/001/1.mp3');
   }
 }

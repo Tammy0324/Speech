@@ -1,4 +1,3 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:project/screens/exePage.dart';
 import 'package:project/screens/home_page.dart';
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(title: 'Demo'),
+        '/': (context) => HomePage(title: '主頁'),
         '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
       },
     );
