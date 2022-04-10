@@ -7,6 +7,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // only use kIsWeb
+// import 'package:intl/intl.dart';
 
 // flutter_sound common code + recorder + player
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the common part of flutter_sound
@@ -103,10 +104,10 @@ class _NewAudioState extends State<NewAudio> {
         var date = DateTime.fromMillisecondsSinceEpoch(
             e.duration.inMilliseconds,
             isUtc: true);
-        // var txt = DateFormat('mm:ss:SS', 'en_US').format(date);
+       // var txt = DateFormat('mm:ss:SS', 'en_US').format(date);
 
         setState(() {
-          _recorderTxt = txt.substring(0, 8);
+          //_recorderTxt = txt.substring(0, 8);
           _dbLevel = e.decibels; // Volume value ranges from 0 to 120
         });
       });
@@ -225,7 +226,7 @@ class _NewAudioState extends State<NewAudio> {
           isUtc: true);
       // var txt = DateFormat('mm:ss:SS', 'en_US').format(date);
       setState(() {
-        _playerTxt = txt.substring(0, 8);
+        //_playerTxt = txt.substring(0, 8);
       });
     });
   }
@@ -515,9 +516,8 @@ class _NewAudioState extends State<NewAudio> {
                 divisions: fsMaxDuration == 0.0 ? 1 : fsMaxDuration.toInt())),
         Container(
           height: 30.0,
-          child: Text(_duration != null
-              ? S.of(context).new_audio_duration( new NumberFormat.compact().format(_duration))
-              : ''),
+          child: Text('null'),
+          // child: Text(_duration != null ? S.of(context).new_audio_duration( new NumberFormat.compact().format(_duration)) : ''),
         ),
       ],
     );
