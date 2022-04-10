@@ -29,10 +29,18 @@ Codec _codec = FSAudioPlatform().defaultCodec; /// codec default, set via flutte
 /// set the file name, later will allow user input
 final String defaultFileName = "HappyAudio";
 
+class S {
+  static S of(BuildContext context) => S.of(context);
+  String get new_audio_microphone_permission_not_granted => "new_audio_microphone_permission_not_granted";
+  String get new_audio_codec => "new_audio_codec";
+  String get new_audio_codec_loading_error => "new_audio_codec_loading_error";
+  String get new_audio_codec_loading => "new_audio_codec_loading";
+  String get new_audio_AppBar => "new_audio_AppBar";
+}
+
+
 class NewAudio extends StatefulWidget {
   // final int ArIndex;
-
-
   const NewAudio({Key? key}) : super(key: key);
 
   @override

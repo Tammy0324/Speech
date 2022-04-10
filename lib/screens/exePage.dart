@@ -2,9 +2,9 @@ import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:http/http.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:project/http_service.dart';
-import 'package:project/posts.dart';
+//import 'package:html/parser.dart' show parse;
+//import 'package:project/http_service.dart';
+//import 'package:project/posts.dart';
 //import 'package:project/models/audio_rec.dart';
 
 class AudioSession extends StatefulWidget {
@@ -46,7 +46,7 @@ class _AudioSessionState extends State<AudioSession> {
         //   primarySwatch: Colors.blue,
         //   visualDensity: VisualDensity.adaptivePlatformDensity,
         // ),
-        body: PostsPage(),
+        //body: PostsPage(),
         bottomNavigationBar: Container(
           height: 110,
           padding: const EdgeInsets.only(top: 10.0),
