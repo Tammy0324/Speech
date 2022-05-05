@@ -1,32 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:project/screens/exePage.dart';
+import 'package:project/screens/home_page.dart';
+import 'package:project/screens/new_audio.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:project/generated/l10n.dart';
+import 'dart:async';
 
 void main() {
-  return runApp(MaterialApp(home: new HomePage(),));
-
+  runApp(MyApp());
 }
 
-class HomePage extends StatelessWidget {
+
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: new AppBar(
-          title: Text('MyApp Demo')
-        ),
-        body: Row(
-          children: <Widget>[
-            Container(
-              color: Colors.blueAccent,
-              width: 100,
-              height: 100,
-            ),
-            Container(
-              color: Colors.red,
-              width: 100,
-              height: 100,
-              margin: EdgeInsets.all(10.0),
-            )
-          ]
-        )
+  Widget build (BuildContext context) {
+    return MaterialApp(
+      title: 'Home',
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        backgroundColor: Colors.white,
+
+      ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => HomePage(title:'主頁'),
+        '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
+        '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
+      },
     );
   }
 }
+
+
+
