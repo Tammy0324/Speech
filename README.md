@@ -1,16 +1,13 @@
-# project
+# 畢業專題：語音辨識——英文口說教學軟體
+一款可以讓使用者練習英文口說能力的APP
 
-A new Flutter project.
+## 準備
+1. clone專案
+2. 使用傳輸線連接安卓手機
+3. 確認手機與電腦在同一網路
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 執行
+1. 啟動Web Server
+2. 開啟main.dart
+3. 執行裝置選擇已連接的手機
+4. 執行檔案並在手機端測試

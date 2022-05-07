@@ -1,20 +1,19 @@
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 const int TIME_OUT = 3;
 
 class Connect {
-  Uri url = Uri.parse('http://10.22.84.123:8000/');
-
-  Future<String> getPosts() async {
-    print("getPosts");
-    final response = await http.get(Uri.parse('https://licman-dev.discoverelement.com:9443/api/service/version')).timeout(Duration(seconds: 3));
-    print("Get Url");
+  Future getPosts() async {
+    final url = 'http://192.168.0.232:8000/';
+    final client = HttpClient();
+    final request = await client.getUrl(Uri.parse(url)).timeout(Duration(seconds: 3));
+    final response = await request.close();
     if (response.statusCode == 200) {
-      print("Get Body.");
-      String body = response.body;
+      var body = await response.transform(Utf8Decoder()).join();
       return body;
     } else {
-      print("Failed toGet Body.");
+      print("Failed to Get Body.");
       throw "Unable to retrieve posts.";
     }
   }

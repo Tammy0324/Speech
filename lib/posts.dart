@@ -7,15 +7,12 @@ class PostsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("PostPage");
     return Scaffold(
-      body: FutureBuilder<String>(
+      body: FutureBuilder(
         future: httpService.getPosts(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             String posts = snapshot.data;
-            print("posts: ");
-            print(posts);
             return Text(posts);
           } else {
             return Center(child: Text("No Data."));
