@@ -16,6 +16,8 @@ import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the pl
 import 'package:project/shared/flutter_sound/flutter_sound_audio_platform_base.dart';// 稻草人 scarecrow
 
 /// Happy recorder - record audio into FILE only.
+String _recorderTxt = '00:00:00'; // work for all language, no need to translate.
+String _playerTxt = '00:00:00';
 double? _dbLevel; // volume
 bool? _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
@@ -416,6 +418,14 @@ class _AudioSessionState extends State<AudioSession> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          // Container(
+          //   margin: const EdgeInsets.only(top: 12.0, bottom: 3.0),
+          //   child: Text(
+          //     _recorderTxt,
+          //     style: Theme.of(context).textTheme.headline5!
+          //         .apply(color: Theme.of(context).colorScheme.primary),
+          //   ),
+          // ),
           Container(
             margin: EdgeInsets.only(top: 3.0, bottom: 6.0),
             child: Text(
@@ -441,8 +451,8 @@ class _AudioSessionState extends State<AudioSession> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-               // width: 56.0,
-                //height: 50.0,
+                width: 56.0,
+                height: 50.0,
                 child: ClipOval(
                   child: TextButton(
                     onPressed: onStartRecorderPressed(),
@@ -451,15 +461,15 @@ class _AudioSessionState extends State<AudioSession> {
                 ),
               ),
               Container(
-                //width: 56.0,
-                //height: 50.0,
+                width: 56.0,
+                height: 50.0,
                 child: ClipOval(
                   child: TextButton(
                       onPressed: onPauseResumeRecorderPressed(), // null = disable
                       child: onPauseResumeRecorderPressed() != null
                           ? (recorderModule.isPaused
-                          ? Icon(Icons.arrow_right_outlined)
-                          : Icon(Icons.pause_outlined))
+                          ? Icon(Icons.arrow_right_outlined,size: 38)
+                          : Icon(Icons.pause_outlined,size: 38))
                           : Container()),
                 ),
               ),
@@ -472,29 +482,36 @@ class _AudioSessionState extends State<AudioSession> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        // Container(
+        //   margin: const EdgeInsets.only(top: 12.0, bottom: 16.0),
+        //   child: Text(
+        //     _playerTxt,
+        //     style: Theme.of(context).textTheme.headline5!.apply(color: Theme.of(context).colorScheme.primary),
+        //   ),
+        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-             // width: 56.0,
-              //height: 50.0,
+              width: 56.0,
+              height: 50.0,
               child: ClipOval(
                 child: TextButton(
                     onPressed: onStartPauseResumePlayerPressed(),
                     child: (playerModule.isStopped || playerModule.isPaused)
-                        ? Icon(Icons.play_arrow_outlined)
-                        : Icon(Icons.pause_outlined)),
+                        ? Icon(Icons.play_arrow_outlined,size: 38)
+                        : Icon(Icons.pause_outlined,size: 38)),
               ),
             ),
             Container(
-              //width: 56.0,
-              //height: 50.0,
+              width: 56.0,
+              height: 50.0,
               child: ClipOval(
                 child: TextButton(
                     onPressed: onStopPlayerPressed(),
                     child: (playerModule.isPlaying || playerModule.isPaused)
-                        ? Icon(Icons.stop_outlined)
+                        ? Icon(Icons.stop_outlined,size: 38)
                         : Container()),
               ),
             ),
@@ -510,16 +527,22 @@ class _AudioSessionState extends State<AudioSession> {
                   await seekToPlayer(value.toInt());
                 },
                 divisions: fsMaxDuration == 0.0 ? 1 : fsMaxDuration.toInt())),
+        // Container(
+        //   height: 30.0,
+        //   child: Text('null'),
+        //   // child: Text(_duration != null ? S.of(context).new_audio_duration( new NumberFormat.compact().format(_duration)) : ''),
+        // ),
       ],
     );
 
+
     return Scaffold(
         appBar: AppBar(
-          title: Text("練習"),
+          title: const Text("練習"),
         ),
         body: PostsPage(),
         bottomNavigationBar: Container(
-          height: 110,
+          height: 200,
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -528,12 +551,12 @@ class _AudioSessionState extends State<AudioSession> {
                 children: [
                   Ink(
                     decoration: const ShapeDecoration(
-                      color: Colors.blueAccent,
+                      color: Colors.white,
                       shape: CircleBorder(),
                     ),
                     child: IconButton(
                       iconSize: 38,
-                      color: Colors.white,
+                      color: Colors.blueAccent,
                       onPressed:play,
                       icon: const Icon( Icons.headphones_outlined),
                     ),
