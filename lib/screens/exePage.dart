@@ -355,17 +355,17 @@ class _AudioSessionState extends State<AudioSession> {
           return Container(
               height: 50,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Text(
-                      S.of(context).new_audio_codec,
-                      style: Theme.of(context).textTheme.bodyText2!
-                          .apply(color: Theme.of(context).colorScheme.primary),
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 5.0),
+                  //   // child: Text(
+                  //   //   S.of(context).new_audio_codec,
+                  //   //   style: Theme.of(context).textTheme.bodyText2!
+                  //   //       .apply(color: Theme.of(context).colorScheme.primary),
+                  //   // ),
+                  // ),
                   DropdownButton<Codec>(
                     value: _codec,
                     underline: Container(height: 0),
@@ -390,24 +390,24 @@ class _AudioSessionState extends State<AudioSession> {
         } else if (snapshot.hasError) {
           return Container(
               height: 50,
-              child: Center(
-                  child: Text(
-                    S.of(context).new_audio_codec_loading_error,
-                    style: Theme.of(context).textTheme.bodyText2!
-                        .apply(color: Theme.of(context).colorScheme.primary),
-                  )
-              )
+              // child: Center(
+              //     child: Text(
+              //       S.of(context).new_audio_codec_loading_error,
+              //       style: Theme.of(context).textTheme.bodyText2!
+              //           .apply(color: Theme.of(context).colorScheme.primary),
+              //     )
+              // )
           );
         } else {
           return Container(
               height: 50,
-              child: Center(
-                  child: Text(
-                    S.of(context).new_audio_codec_loading,
-                    style: Theme.of(context).textTheme.bodyText2!
-                        .apply(color: Theme.of(context).colorScheme.primaryVariant),
-                  )
-              )
+              // child: Center(
+              //     child: Text(
+              //       S.of(context).new_audio_codec_loading,
+              //       style: Theme.of(context).textTheme.bodyText2!
+              //           .apply(color: Theme.of(context).colorScheme.primaryVariant),
+              //     )
+              // )
           );
         }
       },
@@ -416,7 +416,7 @@ class _AudioSessionState extends State<AudioSession> {
     // Recorder
     Widget recorderSection = Column(
         crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           // Container(
           //   margin: const EdgeInsets.only(top: 12.0, bottom: 3.0),
@@ -435,7 +435,7 @@ class _AudioSessionState extends State<AudioSession> {
           ),
           (_isRecording && !kIsWeb) /// Flutter_sound not support web recording volume
               ? Container(
-              margin: const EdgeInsets.only(left: 20.0, right: 20.0),
+              margin: const EdgeInsets.only(left: 5.0, right: 5.0),
               decoration: BoxDecoration(
                   border: Border.all(
                       width: 1,
@@ -447,8 +447,8 @@ class _AudioSessionState extends State<AudioSession> {
                   backgroundColor: Theme.of(context).colorScheme.background))
               : Container(margin: EdgeInsets.only(top: 12)),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
               Container(
                 width: 56.0,
@@ -480,7 +480,7 @@ class _AudioSessionState extends State<AudioSession> {
     // Player
     Widget playerSection = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         // Container(
         //   margin: const EdgeInsets.only(top: 12.0, bottom: 16.0),
@@ -490,7 +490,7 @@ class _AudioSessionState extends State<AudioSession> {
         //   ),
         // ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
@@ -542,10 +542,11 @@ class _AudioSessionState extends State<AudioSession> {
         ),
         body: PostsPage(),
         bottomNavigationBar: Container(
-          height: 200,
+          height: 500,//整個板面高度
           padding: const EdgeInsets.only(top: 10.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Column( // player
                 children: [
