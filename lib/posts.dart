@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'http_service.dart';
-import 'post_model.dart';
 
 class PostsPage extends StatelessWidget {
   final Connect httpService = Connect();
@@ -13,7 +12,9 @@ class PostsPage extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             String posts = snapshot.data;
-            return Text(posts);
+            return Center(child: Text(posts,
+                                      style: TextStyle(fontSize: 25),
+                                      textAlign: TextAlign.center,));
           } else {
             return Center(child: Text("No Data."));
           }
