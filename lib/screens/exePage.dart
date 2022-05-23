@@ -95,8 +95,12 @@ class _AudioSessionState extends State<AudioSession> {
         )
     );
   }
-  void play() {
-    print('Speech');
-    player.play('voice/001/5.mp3');
+  void play() async{
+    Directory? Dir = await getExternalStorageDirectory();
+    print(Dir);
+    var p = Dir?.path;
+    var path = '$p/5.mp3';
+    print('Speech : '+path);
+    player.play(path);
   }
 }
