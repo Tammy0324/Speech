@@ -1,11 +1,14 @@
+import uvicorn
 import azure.cognitiveservices.speech as speechsdk
-from fastapi import FastAPI
+from fastapi import FastAPI, File, UploadFile
 from typing import Optional
 from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
 import random
-import os
+import os, sys
+import shutil
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -38,8 +41,24 @@ for j in range(0, len(arr) - 1):
     print(string)
     # string = '[{"body": "'+string+'"}]'
     # print(string)
-
+file_path = "C:/Users/user/Documents/GitHub/Speech/voice/001/1.mp3"
 
 @app.get('/')
 def create_item():
     return string
+
+@app.get("/download-file")
+def download_file():
+    return FileResponse(path=file_path, filename=file_path)
+
+
+@app.post("/")
+async def root(file: UploadFile = File(...)):
+    print("file_name", file.filename)
+#     destination_file_path = "C:/Users/user/Documents/GitHub/Speech/voice/"+file.filename
+
+    with open(file.filename,"wb") as buffer:
+         shutil.copyfileobj(file.file,buffer)
+
+
+
