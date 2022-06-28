@@ -9,6 +9,8 @@ import random
 import os, sys
 import shutil
 from fastapi.responses import FileResponse
+from starlette.background import BackgroundTask
+import zipfile
 
 app = FastAPI()
 
@@ -30,6 +32,7 @@ string = arr[2]
 # print(string)
 # print(len(string))
 arr = string.split('.')  # len(arr) = 文章句數
+l = len(arr) # 文章句數
 for j in range(0, len(arr) - 1):
     string = arr[j]
     # print(string)
@@ -41,15 +44,25 @@ for j in range(0, len(arr) - 1):
     print(string)
     # string = '[{"body": "'+string+'"}]'
     # print(string)
-file_path = "C:/Users/user/Documents/GitHub/Speech/voice/001/1.mp3"
+
+file_path = 'voice/{}{}{}/{}.mp3'
+file_list = []          ## 空列表
+for i in range(1,l,1):
+    filepath = file_path.format(a,b,c,i)
+    file_list.append(filepath)   ## 使用 append() 添加元素
+    print(i)
+print(file_list)
+
+with zipfile.ZipFile('temp.zip', 'w') as zipF:
+    for file in file_list:
+        zipF.write(file, compress_type=zipfile.ZIP_DEFLATED)
+
+FilePath = 'temp.zip'
 
 @app.get('/')
 def create_item():
     return string
 
-@app.get("/download-file")
-def download_file():
-    return FileResponse(path=file_path, filename=file_path)
 
 
 @app.post("/")
@@ -60,5 +73,6 @@ async def root(file: UploadFile = File(...)):
     with open(file.filename,"wb") as buffer:
          shutil.copyfileobj(file.file,buffer)
 
-
-
+@app.get("/download_file")
+def download_file():
+    return FileResponse(path=FilePath, filename=FilePath)
