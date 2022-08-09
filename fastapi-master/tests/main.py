@@ -1,16 +1,9 @@
-import uvicorn
-import azure.cognitiveservices.speech as speechsdk
 from fastapi import FastAPI, File, UploadFile
-from typing import Optional
-from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
 import random
-import os, sys
 import shutil
 from fastapi.responses import FileResponse
-from starlette.background import BackgroundTask
-import zipfile
 
 app = FastAPI()
 
@@ -29,10 +22,12 @@ for s in sel:
 
 arr = string.split('\n')
 string = arr[2]
+article = string
 # print(string)
 # print(len(string))
 arr = string.split('.')  # len(arr) = 文章句數
-l = len(arr) # 文章句數
+l = len(arr)  # 文章句數
+print(a, b, c)
 for j in range(0, len(arr) - 1):
     string = arr[j]
     # print(string)
@@ -45,6 +40,7 @@ for j in range(0, len(arr) - 1):
     # string = '[{"body": "'+string+'"}]'
     # print(string)
 
+'''
 file_path = 'voice/{}{}{}/{}.mp3'
 file_list = []          ## 空列表
 for i in range(1,l,1):
@@ -58,21 +54,34 @@ with zipfile.ZipFile('temp.zip', 'w') as zipF:
         zipF.write(file, compress_type=zipfile.ZIP_DEFLATED)
 
 FilePath = 'temp.zip'
+'''
+
+filePath = "voice/{}{}{}/{}.mp3"
+
 
 @app.get('/')
 def create_item():
-    return string
-
+    return article
 
 
 @app.post("/")
 async def root(file: UploadFile = File(...)):
     print("file_name", file.filename)
-#     destination_file_path = "C:/Users/user/Documents/GitHub/Speech/voice/"+file.filename
+    #     destination_file_path = "C:/Users/user/Documents/GitHub/Speech/voice/"+file.filename
 
-    with open(file.filename,"wb") as buffer:
-         shutil.copyfileobj(file.file,buffer)
+    with open(file.filename, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
 
 @app.get("/download_file")
 def download_file():
-    return FileResponse(path=FilePath, filename=FilePath)
+    return FileResponse(path=filePath.format(a, b, c, l - 1), filename=filePath.format(a, b, c, l - 1))
+
+
+for i in range(1, l):
+    @app.get("/example/{example_num}")
+    async def example(example_num):
+        print(example_num)
+        print(a, b, c)
+        print(filePath.format(a, b, c, example_num))
+        return FileResponse(filePath.format(a, b, c, example_num))

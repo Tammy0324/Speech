@@ -1,7 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../http_service.dart';
 import '../posts.dart';
-
 import 'dart:async';
 import 'dart:io'; // use to get Platform info & check file exist, can't use on web
 import 'dart:math';
@@ -586,8 +587,18 @@ class _AudioSessionState extends State<AudioSession> {
         )
     );
   }
-  void play() {
-    print('Speech');
-    player.play('voice/001/5.mp3');
+  Future<void> play() async {
+    // print('Speech');
+    // player.play('voice/001/5.mp3');
+
+    const url = 'http://172.20.10.10:8000/example/1';
+    DownloadService downloadService =
+    kIsWeb ? WebDownloadService() : MobileDownloadService();
+    await downloadService.download(url: url);
+
+    Dio dio = Dio();
+    var dir = await getApplicationDocumentsDirectory();
+    String fileName = 'example';
+    player.play('${dir.path}/$fileName');
   }
 }
