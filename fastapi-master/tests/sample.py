@@ -2,7 +2,7 @@ import requests
 import base64
 import json
 import time
-import main
+
 subscriptionKey = "b751009eb5f545f8a4d0ce3cab8d7c71" # replace this with your subscription key
 region = "eastasia" # replace this with the region corresponding to your subscription key, e.g. westus, eastasia
 
@@ -24,7 +24,7 @@ def get_chunk(audio_source, chunk_size=1024):
     yield chunk
 
 # build pronunciation assessment parameters
-referenceText = main.string
+referenceText = 'she goes to the zoo'
 pronAssessmentParamsJson = "{\"ReferenceText\":\"%s\",\"GradingSystem\":\"HundredMark\",\"Dimension\":\"Comprehensive\"}" % referenceText
 pronAssessmentParamsBase64 = base64.b64encode(bytes(pronAssessmentParamsJson, 'utf-8'))
 pronAssessmentParams = str(pronAssessmentParamsBase64, "utf-8")
@@ -39,7 +39,7 @@ headers = { 'Accept': 'application/json;text/xml',
             'Transfer-Encoding': 'chunked',
             'Expect': '100-continue' }
 
-filepath=main.filepath
+filepath='voice/001/1.mp3'
 audioFile = open(filepath, 'rb')
 
 # send request with chunked data
@@ -47,8 +47,17 @@ response = requests.post(url=url, data=get_chunk(audioFile), headers=headers)
 getResponseTime = time.time()
 audioFile.close()
 
+# print(response.text)
+# print(type(response.text))
+
 resultJson = json.loads(response.text)
-print(json.dumps(resultJson, indent=4))
+# print(type(resultJson))
+# print(resultJson)
+json_str=json.dumps(resultJson, indent=4)
+with open('jsonfile.json','w') as f:
+    f.write(json_str)
+
+print(json_str)
 
 latency = getResponseTime - uploadFinishTime
-print("Latency = %sms" % int(latency * 1000))
+# print("Latency = %sms" % int(latency * 1000))
