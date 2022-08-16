@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import random
 import shutil
 from fastapi.responses import FileResponse
+import json
 
 app = FastAPI()
 
@@ -58,6 +59,14 @@ FilePath = 'temp.zip'
 
 filePath = "voice/{}{}{}/{}.mp3"
 
+with open('jsonfile.json','r') as f:
+    json_object = json.loads(f.read())
+
+accuracy = str(json_object['NBest'][0]['AccuracyScore'])
+fluency = str(json_object['NBest'][0]['FluencyScore'])
+complete = str(json_object['NBest'][0]['CompletenessScore'])
+pron = str(json_object['NBest'][0]['PronScore'])
+
 
 @app.get('/')
 def create_item():
@@ -85,3 +94,8 @@ for i in range(1, l):
         print(a, b, c)
         print(filePath.format(a, b, c, example_num))
         return FileResponse(filePath.format(a, b, c, example_num))
+
+@app.get('/result')
+def result():
+    # return accuracy,fluency,complete,pron
+    return accuracy
