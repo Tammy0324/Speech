@@ -1,17 +1,10 @@
-import azure.cognitiveservices.speech as speechsdk
-from fastapi import FastAPI
-from typing import Optional
-from pydantic import BaseModel
+from fastapi import FastAPI, UploadFile, File
 import requests
 from bs4 import BeautifulSoup
 import random
-<<<<<<< Updated upstream
-import os
-=======
 import shutil
 from fastapi.responses import FileResponse
 import nltk
->>>>>>> Stashed changes
 
 app = FastAPI()
 
@@ -28,24 +21,7 @@ r = requests.get(url.format(a, b, c))
 soup = BeautifulSoup(r.text, "html.parser")
 sel = soup.select('div.content-body div.contain font')
 
-<<<<<<< Updated upstream
-arr = string.split('\n')
-string = arr[2]
-# print(string)
-# print(len(string))
-arr = string.split('.')  # len(arr) = 文章句數
-for j in range(0, len(arr) - 1):
-    string = arr[j]
-    # print(string)
-    # print(len(string))
-    if len(string) < 3:  # 解決Mr. Ms.之類的句點斷句問題
-        string += '.'
-        string += arr[j + 1]
 
-    print(string)
-    # string = '[{"body": "'+string+'"}]'
-    # print(string)
-=======
 # 處理文章內容
 contain = ""
 article = ""
@@ -69,14 +45,10 @@ for i in sen:
 print(sentence)
 
 filePath = "voice/{}{}{}/{}.mp3"
->>>>>>> Stashed changes
 
 
 @app.get('/article')
 def create_item():
-<<<<<<< Updated upstream
-    return string
-=======
     return sentence
 
 
@@ -101,4 +73,3 @@ for i in range(1, l+1):
         print(a, b, c)
         print(filePath.format(a, b, c, example_num))
         return FileResponse(filePath.format(a, b, c, example_num))
->>>>>>> Stashed changes
