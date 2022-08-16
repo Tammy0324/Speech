@@ -48,6 +48,14 @@ dependencies:
   audioplayers: ^0.20.1
   platform_detect: ^2.0.3
   path_provider: ^2.0.2
+<<<<<<< Updated upstream
+=======
+  dio: ^4.0.4
+  universal_html: ^2.0.8
+  fluttertoast: ^8.0.9
+  file_picker: ^5.0.1
+  http: ^0.13.5
+>>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:
