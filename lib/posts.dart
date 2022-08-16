@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'http_service.dart';
-import 'post_model.dart';
 
 class PostsPage extends StatelessWidget {
   final Connect httpService = Connect();
@@ -12,10 +11,6 @@ class PostsPage extends StatelessWidget {
         future: httpService.getPosts(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-<<<<<<< Updated upstream
-            String posts = snapshot.data;
-            return Text(posts);
-=======
             List<String> posts = snapshot.data;
             return Center(
                 child: ListView.builder(
@@ -32,7 +27,6 @@ class PostsPage extends StatelessWidget {
                   }
                 )
             );
->>>>>>> Stashed changes
           } else {
             return Center(child: Text("No Data."));
           }
