@@ -1,6 +1,7 @@
 import json
 import azure.cognitiveservices.speech as speechsdk
 import time
+import main
 
 speech_config = speechsdk.SpeechConfig(subscription="b751009eb5f545f8a4d0ce3cab8d7c71", region="eastasia")
 
@@ -23,14 +24,15 @@ def cutString(evt):
     # print(arr2[1])
     s = arr2[1]
     # print(type(s))
-    if s in "A simple test to write to a file":
+    # print(type(main.string))
+    if s in main.string:
         print("great")
         # print("A simple test to write to a file.")
         # print("you said:")
         # print(s)
     else:
-        print("article:")
-        print("A simple test to write to a file.")
+        print("sentence:")
+        print(main.string)
         print("you said:")
         print(s)
 
