@@ -24,14 +24,14 @@ def cutString(evt):
     # print(arr2[1])
     s = arr2[1]
     if s in main.string:
-        result = "great"
-        print(result)
+        # result = "great"
+        print("perfact")
     else:
-        result = s
+        # result = s
         print("sentence:")
         print(main.string)
         print("you said:")
-        print(result)
+        print(s)
 
 
 speech_recognizer.recognized.connect(lambda evt: cutString(evt))
