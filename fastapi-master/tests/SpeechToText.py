@@ -23,13 +23,8 @@ def cutString(evt):
     arr2 = text.split('"')
     # print(arr2[1])
     s = arr2[1]
-    # print(type(s))
-    # print(type(main.string))
     if s in main.string:
         print("great")
-        # print("A simple test to write to a file.")
-        # print("you said:")
-        # print(s)
     else:
         print("sentence:")
         print(main.string)
