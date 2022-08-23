@@ -52,18 +52,14 @@ def create_item():
     return sentence
 
 
-@app.post("/")
+@app.post("/recorder")
 async def root(file: UploadFile = File(...)):
-    print("file_name", file.filename)
-    #     destination_file_path = "C:/Users/user/Documents/GitHub/Speech/voice/"+file.filename
-
-    with open(file.filename, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    return "123"
 
 
-@app.get("/download_file")
-def download_file():
-    return FileResponse(path=filePath.format(a, b, c, l - 1), filename=filePath.format(a, b, c, l - 1))
+# @app.get("/download_file")
+# def download_file():
+#     return FileResponse(path=filePath.format(a, b, c, l - 1), filename=filePath.format(a, b, c, l - 1))
 
 
 for i in range(1, l+1):

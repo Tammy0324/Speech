@@ -83,8 +83,8 @@ class _NewAudioState extends State<NewAudio> {
       var path = "";
       _recMsg = '$defaultFileName${ext[_codec.index]}'; // recoding message = file name
       if (!kIsWeb) {
-        var tempDir = await getTemporaryDirectory(); // need path_provider package
-        path = '${tempDir.path}/$_recMsg';
+        var tempDir = await getExternalStorageDirectory(); // need path_provider package
+        path = '${tempDir?.path}/$_recMsg';
       } else {
         path = '_$_recMsg';
       }
