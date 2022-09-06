@@ -44,6 +44,7 @@ class AudioSession extends StatefulWidget {
 }
 
 class _AudioSessionState extends State<AudioSession> {
+  int sen_num = 1;
   int _selectedBottomBarItemIndex = 0;
   bool recordClick = true;
   bool playClick = true;
@@ -91,7 +92,7 @@ class _AudioSessionState extends State<AudioSession> {
         }
       }
       var path = "";
-      _recMsg = '$defaultFileName${ext[_codec.index]}'; // recoding message = file name
+      _recMsg = '$defaultFileName$sen_num${ext[_codec.index]}'; // recoding message = file name
       if (!kIsWeb) {
         var tempDir = await getExternalStorageDirectory();  // need path_provider package
         path = '${tempDir?.path}/$_recMsg';
@@ -248,6 +249,7 @@ class _AudioSessionState extends State<AudioSession> {
 
       if (kIsWeb || await File(_path!).exists() ) { // if not web, check file exists?
         audioFilePath = _path;
+        print(audioFilePath);
       }
 
       if (audioFilePath != null) {
@@ -397,25 +399,25 @@ class _AudioSessionState extends State<AudioSession> {
           );
         } else if (snapshot.hasError) {
           return Container(
-              height: 50,
-              // child: Center(
-              //     child: Text(
-              //       S.of(context).new_audio_codec_loading_error,
-              //       style: Theme.of(context).textTheme.bodyText2!
-              //           .apply(color: Theme.of(context).colorScheme.primary),
-              //     )
-              // )
+            height: 50,
+            // child: Center(
+            //     child: Text(
+            //       S.of(context).new_audio_codec_loading_error,
+            //       style: Theme.of(context).textTheme.bodyText2!
+            //           .apply(color: Theme.of(context).colorScheme.primary),
+            //     )
+            // )
           );
         } else {
           return Container(
-              height: 50,
-              // child: Center(
-              //     child: Text(
-              //       S.of(context).new_audio_codec_loading,
-              //       style: Theme.of(context).textTheme.bodyText2!
-              //           .apply(color: Theme.of(context).colorScheme.primaryVariant),
-              //     )
-              // )
+            height: 50,
+            // child: Center(
+            //     child: Text(
+            //       S.of(context).new_audio_codec_loading,
+            //       style: Theme.of(context).textTheme.bodyText2!
+            //           .apply(color: Theme.of(context).colorScheme.primaryVariant),
+            //     )
+            // )
           );
         }
       },
@@ -679,11 +681,9 @@ class _AudioSessionState extends State<AudioSession> {
                 ],
               ),
             ],
-        ),
-    ));
+          ),
+        ));
   }
-
-  int sen_num = 1;
 
   previous() {
     print('previous');
@@ -709,9 +709,8 @@ class _AudioSessionState extends State<AudioSession> {
 
   Future<void> play() async {
     print('Speech $sen_num');
-    // player.play('voice/001/5.mp3');
 
-    final url = 'http://192.168.1.106:8000/example/$sen_num';
+    final url = 'http://172.20.10.10:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -737,7 +736,7 @@ class _AudioSessionState extends State<AudioSession> {
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://192.168.43.32:8000/recorder');
+    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
         'file', _files!.first.path.toString()));
