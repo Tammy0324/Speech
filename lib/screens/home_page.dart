@@ -37,7 +37,7 @@ class HomePageState extends State<HomePage> {
                 title: Text('練習',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),),
                 onTap: () {
-                  Navigator.pushNamed(context, '/audio',arguments: 0);
+                  Navigator.pushNamed(context, '/article',arguments: 0);
                 },
                 trailing: Icon(
                   Icons.play_arrow,

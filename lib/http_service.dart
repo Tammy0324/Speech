@@ -17,7 +17,6 @@ class Connect {
     if (response.statusCode == 200) {
       var body = await response.transform(Utf8Decoder()).join();
       var sen = body.split("\\n");
-      //print(sen);
       return sen;
     } else {
       print("Failed to Get Body.");

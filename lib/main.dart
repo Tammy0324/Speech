@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project/screens/ariticlePage.dart';
 import 'package:project/screens/exePage.dart';
 import 'package:project/screens/home_page.dart';
 import 'package:project/screens/new_audio.dart';
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => HomePage(title:'主頁'),
+        '/article': (context) => Article(),
         '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
         '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
       },

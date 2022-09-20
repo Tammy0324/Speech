@@ -40,9 +40,10 @@ print("l = ", l)
 sentence = "\n"
 list = []
 for i in sen:
-    sentence = ""
+    temp = ""
     sentence += i
-    list.append(sentence)
+    temp += i
+    list.append(temp)
     sentence += "\n"
 print(list)
 

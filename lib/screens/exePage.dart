@@ -549,7 +549,7 @@ class _AudioSessionState extends State<AudioSession> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("練習"),
+          title: Text(""),
           // automaticallyImplyLeading: false, // not display <- back btn
         ),
         body: FutureBuilder(
