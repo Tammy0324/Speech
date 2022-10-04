@@ -10,7 +10,7 @@ const int TIME_OUT = 3;
 class Connect {
   var sentence;
   Future getPosts() async {
-    const url = 'http://172.20.10.10:8000/article';
+    const url = 'http://192.168.43.32:8000/article';
     final client = HttpClient();
     final request = await client.getUrl(Uri.parse(url)).timeout(Duration(seconds: 3));
     final response = await request.close();

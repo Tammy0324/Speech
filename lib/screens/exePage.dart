@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../http_service.dart';
@@ -379,8 +377,14 @@ class _AudioSessionState extends State<AudioSession> {
                   DropdownButton<Codec>(
                     value: _codec,
                     underline: Container(height: 0),
-                    style: Theme.of(context).textTheme.bodyText2!
-                        .apply(color: Theme.of(context).colorScheme.primary),
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyText2!
+                        .apply(color: Theme
+                        .of(context)
+                        .colorScheme
+                        .primary),
                     onChanged: (newCodec) {
                       setCodec(newCodec!);
                       _codec = newCodec;
@@ -670,14 +674,9 @@ class _AudioSessionState extends State<AudioSession> {
                     iconSize: 38,
                     color: Colors.blueAccent,
                     onPressed: _uploadFile,
-                    icon: const Icon( Icons.publish),
+                    icon: const Icon(Icons.publish),
                   ),
-                  IconButton(
-                    iconSize: 38,
-                    color: Colors.blueAccent,
-                    onPressed: _openFileExplorer,
-                    icon: const Icon( Icons.file_open),
-                  ),
+
                 ],
               ),
             ],
@@ -687,7 +686,7 @@ class _AudioSessionState extends State<AudioSession> {
 
   previous() {
     print('previous');
-    if(sen_num <= 1) {
+    if (sen_num <= 1) {
       Fluttertoast.showToast(msg: '沒有上一句了！');
     } else {
       sen_num -= 1;
@@ -698,7 +697,7 @@ class _AudioSessionState extends State<AudioSession> {
 
   next() {
     print('next');
-    if(sen_num >= article_len) {
+    if (sen_num >= article_len) {
       Fluttertoast.showToast(msg: '沒有下一句了！');
     } else {
       sen_num += 1;
@@ -710,7 +709,7 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
+    final url = 'http://192.168.43.32:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -721,25 +720,13 @@ class _AudioSessionState extends State<AudioSession> {
     player.play('${dir.path}/$fileName');
   }
 
-  List<PlatformFile>? _files;
-
-  void _openFileExplorer() async {
-    _files = (await FilePicker.platform.pickFiles(
-        type: FileType.any,
-        allowMultiple: false,
-        allowedExtensions: null
-    ))!.files;
-
-    print('Loaded file path is : ${_files!.first.path}');
-  }
-
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
+    var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
-        'file', _files!.first.path.toString()));
+        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num.aac'));
     var response = await request.send();
     if (response.statusCode == 200) {
       print('Uploaded ...');
