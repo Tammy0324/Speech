@@ -49,6 +49,21 @@ print(list)
 
 filePath = "voice/{}{}{}/{}.mp3"
 
+# #將文章拆分為單句
+# sen_dict = dict()
+# cnt=0
+# for i in sen:
+#     if cnt <= l:
+#         cnt = cnt + 1
+#     sen_dict[cnt] = i
+#     print(cnt)
+#     print(sen_dict[cnt])
+#     s = sen_dict[1]
+#
+# @app.get('/single')
+# def single_sen():
+#     return s
+
 
 @app.get('/article')
 def create_item():

@@ -10,14 +10,15 @@ const int TIME_OUT = 3;
 class Connect {
   var sentence;
   Future getPosts() async {
-    const url = 'http://172.20.10.10:8000/article';
+    const url = 'http://172.20.10.2:8000/article';
     final client = HttpClient();
     final request = await client.getUrl(Uri.parse(url)).timeout(Duration(seconds: 3));
     final response = await request.close();
     if (response.statusCode == 200) {
       var body = await response.transform(Utf8Decoder()).join();
       var sen = body.split("\\n");
-      return sen;
+      return sen; // sen ==> list型態
+    //  傳值到
     } else {
       print("Failed to Get Body.");
       throw "Unable to retrieve posts.";

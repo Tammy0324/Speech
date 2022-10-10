@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
@@ -558,17 +559,24 @@ class _AudioSessionState extends State<AudioSession> {
             if (snapshot.hasData) {
               List<String> posts = snapshot.data;
               article_len = posts.length-2;
+              var sen = posts[sen_num];
               return Center(
                   child: ListView.builder(
                       itemCount: posts.length,
                       itemBuilder: (BuildContext context, int num) {
-                        var sen = posts[num];
+                        // var sen = posts[num];
                         return Center(
-                          child: Text(
-                            sen,
-                            style: TextStyle(fontSize: 25),
-                            textAlign: TextAlign.center,
-                          ),
+                          child: Column(
+                            children: <Widget>[
+                              TextButton(
+                                onPressed: play,
+                                child:
+                                  Text("$sen_num $sen", style: TextStyle(fontSize: 25)),
+                                  style: ,
+                              )
+                            ],
+                          )
+                          // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                         );
                       }
                   )
@@ -694,6 +702,7 @@ class _AudioSessionState extends State<AudioSession> {
       print("sen_num = $sen_num");
     }
     play();
+    return sen_num;
   }
 
   next() {
@@ -705,6 +714,7 @@ class _AudioSessionState extends State<AudioSession> {
       print("sen_num = $sen_num");
     }
     play();
+    return sen_num;
   }
 
   Future<void> play() async {
