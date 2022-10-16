@@ -25,7 +25,7 @@ double? _dbLevel; // volume
 bool? _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
 double? _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
-Codec _codec = FSAudioPlatform().defaultCodec; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
+Codec _codec = Codec.pcm16WAV; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
 
 /// set the file name, later will allow user input
 const String defaultFileName = "Audio";
@@ -51,7 +51,7 @@ class _AudioSessionState extends State<AudioSession> {
   bool _isRecording = false; // initial recording status to not recording.
   String? _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
-  Future<List<Codec>>? _supportedCodec; // used future builder
+  //Future<List<Codec>>? _supportedCodec; // used future builder
 
 
   // initial
@@ -59,22 +59,22 @@ class _AudioSessionState extends State<AudioSession> {
     await fsInitializeRecorder();
     await fsInitializePlayer(false);
     await setCodec(_codec);
-    _supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
+    //_supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
   }//end of init
 
   // get supported codec
-  Future<List<Codec>>platformSupportedCodec() async {
-    List<Codec> _supported=[];
-    for (var _codecX in Codec.values) {
-      // skip default codec which its ext is ""
-      if ( (ext[_codecX.index] != "")
-          && (await recorderModule.isEncoderSupported(_codecX))
-          && (await playerModule.isDecoderSupported(_codecX)) ) {
-        _supported.add(_codecX);
-      }
-    }
-    return _supported;
-  }// end of platformSupportedCodec
+  // Future<List<Codec>>platformSupportedCodec() async {
+  //   List<Codec> _supported=[];
+  //   for (var _codecX in Codec.values) {
+  //     // skip default codec which its ext is ""
+  //     if ( (ext[_codecX.index] != "")
+  //         && (await recorderModule.isEncoderSupported(_codecX))
+  //         && (await playerModule.isDecoderSupported(_codecX)) ) {
+  //       _supported.add(_codecX);
+  //     }
+  //   }
+  //   return _supported;
+  // }// end of platformSupportedCodec
 
   void startRecorder() async {
     var _startRecorderErr = false; // error indicator
@@ -106,7 +106,7 @@ class _AudioSessionState extends State<AudioSession> {
         numChannels: 1,
         sampleRate: (_codec == Codec.pcm16) ? fsSAMPLERATE : fsSAMPLERATE_Low, /// non PCM canNOT use 44100, use lower sample rate 16000
       );
-      recorderModule.logger.d('startRecorder *happy*');
+      recorderModule.logger.d('startRecorder');
 
       // onProgress is a stream to post recorder status. api: https://tau.canardoux.xyz/tau_api_recorder_on_progress.html
       fsRecorderSubscription = recorderModule.onProgress!.listen((e) {
@@ -342,11 +342,6 @@ class _AudioSessionState extends State<AudioSession> {
     fsReleaseFlutterSoundPlayerSession();
   }
 
-  void _onBottomBarItemTapped(int index) {
-    setState(() {
-      _selectedBottomBarItemIndex = index;
-    });
-  }
 
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
@@ -357,7 +352,7 @@ class _AudioSessionState extends State<AudioSession> {
   Widget build(BuildContext context) {
     // Codec Selection
     Widget futureCodecSelect = FutureBuilder<List<Codec>>(
-      future: _supportedCodec,
+      //future: _supportedCodec,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return Container(
@@ -440,13 +435,6 @@ class _AudioSessionState extends State<AudioSession> {
           //         .apply(color: Theme.of(context).colorScheme.primary),
           //   ),
           // ),
-          Container(
-            margin: EdgeInsets.only(top: 3.0, bottom: 6.0),
-            child: Text(
-              _recMsg,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ),
           (_isRecording && !kIsWeb) /// Flutter_sound not support web recording volume
               ? Container(
               margin: const EdgeInsets.only(left: 5.0, right: 5.0),
@@ -586,9 +574,11 @@ class _AudioSessionState extends State<AudioSession> {
           height: 500,
           padding: const EdgeInsets.only(top: 10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(// player
                     children: [
@@ -726,7 +716,7 @@ class _AudioSessionState extends State<AudioSession> {
     var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
-        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num.aac'));
+        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
     var response = await request.send();
     if (response.statusCode == 200) {
       print('Uploaded ...');
