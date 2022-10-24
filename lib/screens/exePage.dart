@@ -569,10 +569,12 @@ class _AudioSessionState extends State<AudioSession> {
                           child: Column(
                             children: <Widget>[
                               TextButton(
-                                onPressed: play,
+                                onPressed: () => {
+                                  play()
+                                },
                                 child:
-                                  Text("$sen_num $sen", style: TextStyle(fontSize: 25)),
-                                  style: ,
+                                  Text("$sen_num  $sen", style: TextStyle(fontSize: 25)),
+                                  // style: ,
                               )
                             ],
                           )
