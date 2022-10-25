@@ -515,9 +515,11 @@ class _AudioSessionState extends State<AudioSession> {
           height: 500,
           padding: const EdgeInsets.only(top: 10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(// player
                     children: [
@@ -595,18 +597,13 @@ class _AudioSessionState extends State<AudioSession> {
                         playerSection, // recordPlayer
                       ],
                     ),
+                    IconButton(
+                      iconSize: 38,
+                      color: Colors.blueAccent,
+                      onPressed: _uploadFile,
+                      icon: const Icon(Icons.publish),
+                    ),
                   ]
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    iconSize: 38,
-                    color: Colors.blueAccent,
-                    onPressed: _uploadFile,
-                    icon: const Icon(Icons.publish),
-                  ),
-
-                ],
               ),
             ],
           ),
