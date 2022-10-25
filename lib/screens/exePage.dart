@@ -35,20 +35,18 @@ class AudioSession extends StatefulWidget {
 
   // do we need key?
   AudioSession({Key? key, required this.arIndex}) : super(key: key);
-  //AudioSession({required this.arIndex});
 
   @override
   _AudioSessionState createState() => _AudioSessionState();
 }
 
 class _AudioSessionState extends State<AudioSession> {
-  GlobalKey<_RefreshState> RecordingKey = GlobalKey(); //監聽
+  GlobalKey<_RecorderState> RecordingKey = GlobalKey(); //監聽錄音
+  GlobalKey<_PlayerState> PlayingKey = GlobalKey(); //監聽播放
   int sen_num = 1;
-  int _selectedBottomBarItemIndex = 0;
   bool recordClick = true;
   bool playClick = true;
   bool recordPlayerClick = true;
-
   bool _isRecording = false; // initial recording status to not recording.
   String? _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
@@ -58,8 +56,6 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> init() async {
     await fsInitializeRecorder();
     await fsInitializePlayer(false);
-    //await setCodec(_codec);
-    //_supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
   }//end of init
 
   void startRecorder() async {
@@ -104,12 +100,6 @@ class _AudioSessionState extends State<AudioSession> {
       _isRecording = true;
       _path = path;
       RecordingKey.currentState?.onPressed(_isRecording);
-
-      // setState(() { //按下錄音鍵
-      //   print("125");
-      //   _isRecording = true;
-      //   _path = path;
-      // });
     } on RecordingPermissionException catch (err_inst) {
       _startRecorderErr = true;
       recorderModule.logger.e('RecordingPermissionException error:' + err_inst.message);
@@ -130,32 +120,16 @@ class _AudioSessionState extends State<AudioSession> {
     }
   }//end of startRecorder
 
-  // get audio duration: (Web not work, its _duration = null)
-  // Future<void> getDuration() async {
-  //   var path = _path;
-  //   var d = path != null ? await flutterSoundHelper.duration(path) : null;
-  //   _duration = d != null ? d.inMilliseconds / 1000.0 : null;
-  //   setState(() {
-  //     print("156");
-  //   });
-  // }// end of getDuration
-
   void stopRecorder() async {
     try {
       await recorderModule.stopRecorder();
       recorderModule.logger.d('stopRecorder');
       fsCancelRecorderSubscriptions();
-      //await getDuration();
     } on Exception catch (err) {
       recorderModule.logger.d('stopRecorder error: $err');
     }
     _isRecording = false;
     RecordingKey.currentState?.onPressed(_isRecording);
-    //局部刷新！！！
-    // setState(() { //按下錄音結束鍵
-    //   print("170");
-    //   _isRecording = false;
-    // });
   }//end of stopRecorder
 
   void pauseResumeRecorder() async {
@@ -172,13 +146,6 @@ class _AudioSessionState extends State<AudioSession> {
     setState(() {});
   }//end of pauseResumeRecorder
 
-  void Function()? onPauseResumeRecorderPressed() {
-    if (recorderModule.isPaused || recorderModule.isRecording) {
-      return pauseResumeRecorder;
-    }
-    return null;
-  }//end of onPauseResumeRecorderPressed
-
   void startStopRecorder() {
     if (recorderModule.isRecording || recorderModule.isPaused) {
       stopRecorder();
@@ -191,14 +158,6 @@ class _AudioSessionState extends State<AudioSession> {
     if (!_encoderSupported!) return null; // null: disable the button when selected codec not supported
     return startStopRecorder;
   }//end of onStartRecorderPressed
-
-  // Future<void> setCodec(Codec codec) async {
-  //   _encoderSupported = await recorderModule.isEncoderSupported(codec);
-  //   _decoderSupported = await playerModule.isDecoderSupported(codec);
-  //   setState(() {
-  //     _codec = codec;
-  //   });
-  // }//end of setCodec
 
   /// record player
   void _addListeners() {
@@ -215,9 +174,7 @@ class _AudioSessionState extends State<AudioSession> {
 
       var date = DateTime.fromMillisecondsSinceEpoch(e.position.inMilliseconds,
           isUtc: true);
-      // setState(() { //播放錄音內容
-      //   print("246");
-      // });
+      PlayingKey.currentState?.onPressed();
     });
   }//end o _addListeners
 
@@ -237,11 +194,11 @@ class _AudioSessionState extends State<AudioSession> {
             sampleRate: fsSAMPLERATE,
             whenFinished: () {
               playerModule.logger.d('Play finished');
-              setState(() {});
+              PlayingKey.currentState?.onPressed();
             });
 
         _addListeners();
-        setState(() {});
+        PlayingKey.currentState?.onPressed();
         playerModule.logger.d('<--- startPlayer');
       }
     } on Exception catch (err) {
@@ -261,7 +218,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.d('error: $err');
     }
-    setState(() {});
+    PlayingKey.currentState?.onPressed();
   }//end of stopPlayer
 
   void pauseResumePlayer() async {
@@ -274,26 +231,14 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-    setState(() {});
+    PlayingKey.currentState?.onPressed();
   }// end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
   void Function()? onStartPauseResumePlayerPressed() {
-    if (_path == null) return null; // no file, not able play, disable btn
-    // selected codec is not supported, disable btn
-    /// why force Codec.pcm16 always = enabled?
-    if (!(_decoderSupported || _codec == Codec.pcm16)) return null;
     if (playerModule.isStopped) return startPlayer;
     if (playerModule.isPaused || playerModule.isPlaying) return pauseResumePlayer;
-
-    return null; // catch all, just disable btn
   }//end of onStartPauseResumePlayerPressed
-
-  void Function()? onStopPlayerPressed() {
-    return (playerModule.isPlaying || playerModule.isPaused)
-        ? stopPlayer
-        : null;
-  }//end of onStopPlayerPressed
 
   Future<void> seekToPlayer(int milliSecs) async {
     try {
@@ -327,51 +272,6 @@ class _AudioSessionState extends State<AudioSession> {
 
   @override
   Widget build(BuildContext context) {
-    // Codec Selection
-    // Widget futureCodecSelect = FutureBuilder<List<Codec>>(
-    //   //future: _supportedCodec,
-    //   builder: (BuildContext context, AsyncSnapshot snapshot) {
-    //     if (snapshot.hasData) {
-    //       return Container(
-    //           height: 50,
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //             crossAxisAlignment: CrossAxisAlignment.end,
-    //             children: <Widget>[
-    //               DropdownButton<Codec>(
-    //                 value: _codec,
-    //                 underline: Container(height: 0),
-    //                 style: Theme
-    //                     .of(context)
-    //                     .textTheme
-    //                     .bodyText2!
-    //                     .apply(color: Theme
-    //                     .of(context)
-    //                     .colorScheme
-    //                     .primary),
-    //                 onChanged: (newCodec) {
-    //                   setCodec(newCodec!);
-    //                   _codec = newCodec;
-    //                   getDuration();
-    //                 },
-    //                 items: snapshot.data.map<DropdownMenuItem<Codec>>((item) {
-    //                   return DropdownMenuItem<Codec>(
-    //                     value: item,
-    //                     child: Text("${ext[item.index].substring(1)}"),
-    //                   );
-    //                 }).toList(), // platform supported codec.
-    //               ),
-    //             ],
-    //           )
-    //       );
-    //     } else {
-    //       return Container(
-    //         height: 50,
-    //       );
-    //     }
-    //   },
-    // );
-
     // Recorder
     Widget recorderSection = Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -400,21 +300,8 @@ class _AudioSessionState extends State<AudioSession> {
                 child: ClipOval(
                   child: TextButton(
                     onPressed: onStartRecorderPressed(),
-                    child: Refresh(RecordingKey),
+                    child: RecorderState(RecordingKey),
                   ),
-                ),
-              ),
-              Container(
-                width: 56.0,
-                height: 50.0,
-                child: ClipOval(
-                  child: TextButton(
-                      onPressed: onPauseResumeRecorderPressed(), // null = disable
-                      child: onPauseResumeRecorderPressed() != null
-                          ? (recorderModule.isPaused
-                          ? Icon(Icons.arrow_right_outlined,size: 38)
-                          : Icon(Icons.pause_outlined,size: 38))
-                          : Container()),
                 ),
               ),
             ],
@@ -436,20 +323,8 @@ class _AudioSessionState extends State<AudioSession> {
               child: ClipOval(
                 child: TextButton(
                     onPressed: onStartPauseResumePlayerPressed(),
-                    child: (playerModule.isStopped || playerModule.isPaused)
-                        ? Icon(Icons.play_arrow_outlined,size: 38)
-                        : Icon(Icons.pause_outlined,size: 38)),
-              ),
-            ),
-            Container(
-              width: 56.0,
-              height: 50.0,
-              child: ClipOval(
-                child: TextButton(
-                    onPressed: onStopPlayerPressed(),
-                    child: (playerModule.isPlaying || playerModule.isPaused)
-                        ? Icon(Icons.stop_outlined,size: 38)
-                        : Container()),
+                    child: PlayerState(PlayingKey),
+                ),
               ),
             ),
           ],
@@ -472,7 +347,6 @@ class _AudioSessionState extends State<AudioSession> {
     return Scaffold(
         appBar: AppBar(
           title: Text(""),
-          // automaticallyImplyLeading: false, // not display <- back btn
         ),
         body: FutureBuilder(
           future: httpService.getPosts(),
@@ -581,13 +455,11 @@ class _AudioSessionState extends State<AudioSession> {
                   children: [
                     Column( //Recorder
                       children: [
-                        //kIsWeb ? Container() : futureCodecSelect,
                         recorderSection, // recording
                       ],
                     ),
                     Column( //Record Player
                       children: [
-                        //kIsWeb ? Container() : futureCodecSelect,
                         playerSection, // recordPlayer
                       ],
                     ),
@@ -658,17 +530,16 @@ class _AudioSessionState extends State<AudioSession> {
 }
 
 //封装的widget
-class Refresh extends StatefulWidget {
+class RecorderState extends StatefulWidget {
   final Key key;
 
-  const Refresh(this.key);
+  const RecorderState(this.key);
 
   @override
-  _RefreshState createState() => _RefreshState();
+  _RecorderState createState() => _RecorderState();
 }
 
-class _RefreshState extends State<Refresh> {
-  String text = "0";
+class _RecorderState extends State<RecorderState> {
   bool S = false;
 
   void onPressed(bool state) {
@@ -685,6 +556,33 @@ class _RefreshState extends State<Refresh> {
     } else {
       print("Recorder State: false");
       return Icon(Icons.mic_outlined, size: 38);
+    }
+  }
+}
+
+//封装的widget
+class PlayerState extends StatefulWidget {
+  final Key key;
+
+  const PlayerState(this.key);
+
+  @override
+  _PlayerState createState() => _PlayerState();
+}
+
+class _PlayerState extends State<PlayerState> {
+
+  void onPressed() {
+    setState((){});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("rebuild");
+    if (playerModule.isStopped || playerModule.isPaused) { //錄音中
+      return Icon(Icons.play_arrow_outlined,size: 38);
+    } else {
+      return Icon(Icons.pause_outlined,size: 38);
     }
   }
 }
