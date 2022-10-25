@@ -1,31 +1,35 @@
-import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:dio/dio.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../http_service.dart';
 import 'dart:async';
 import 'dart:io'; // use to get Platform info & check file exist, can't use on web
 import 'dart:math';
-import 'package:project/generated/l10n.dart';
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // only use kIsWeb
+import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter/foundation.dart' show kIsWeb; // only use kIsWeb
+import 'package:project/generated/l10n.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the common part of flutter_sound
-import 'package:project/shared/flutter_sound/flutter_sound_record.dart'; // the recording part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the player part of flutter_sound
-import 'package:project/shared/flutter_sound/flutter_sound_audio_platform_base.dart';// 稻草人 scarecrow
-import 'package:http/http.dart' as http;
+import 'package:project/shared/flutter_sound/flutter_sound_record.dart'; // the recording part of flutter_sound
+
+import '../http_service.dart';
 
 /// Happy recorder - record audio into FILE only.
-String _recorderTxt = '00:00:00'; // work for all language, no need to translate.
+String _recorderTxt =
+    '00:00:00'; // work for all language, no need to translate.
 String _playerTxt = '00:00:00';
 double? _dbLevel; // volume
 bool? _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
-double? _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
-Codec _codec = Codec.pcm16WAV; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
+double?
+    _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
+Codec _codec = Codec.pcm16WAV;
+
+/// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
 
 /// set the file name, later will allow user input
 const String defaultFileName = "Audio";
@@ -715,13 +719,107 @@ class _AudioSessionState extends State<AudioSession> {
     //TODO replace the url bellow with you ipv4 address in ipconfig
     var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
-    request.files.add(await http.MultipartFile.fromPath(
-        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
+    request.files.add(await http.MultipartFile.fromPath('file',
+        '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
     var response = await request.send();
     if (response.statusCode == 200) {
+      _onLoading();
       print('Uploaded ...');
     } else {
       print('Something went wrong!');
+    }
+  }
+
+  void _onLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.of(context).pop(true);
+        });
+        return Dialog(
+          child: Container(
+            width: 50,
+            height: 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(
+                  height: 10,
+                  width: 10,
+                ),
+                Text(
+                  'Loading...',
+                  style: TextStyle(
+                    fontSize: 25,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+//封装的widget
+class RecorderState extends StatefulWidget {
+  final Key key;
+
+  const RecorderState(this.key);
+
+  @override
+  _RecorderState createState() => _RecorderState();
+}
+
+class _RecorderState extends State<RecorderState> {
+  bool S = false;
+
+  void onPressed(bool state) {
+    setState(() {
+      S = state;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (S == true) {
+      //錄音中
+      print("Recorder State: true");
+      return Icon(Icons.stop_outlined, size: 38);
+    } else {
+      print("Recorder State: false");
+      return Icon(Icons.mic_outlined, size: 38);
+    }
+  }
+}
+
+//封装的widget
+class PlayerState extends StatefulWidget {
+  final Key key;
+
+  const PlayerState(this.key);
+
+  @override
+  _PlayerState createState() => _PlayerState();
+}
+
+class _PlayerState extends State<PlayerState> {
+  void onPressed() {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("rebuild");
+    if (playerModule.isStopped || playerModule.isPaused) {
+      //錄音中
+      return Icon(Icons.play_arrow_outlined, size: 38);
+    } else {
+      return Icon(Icons.pause_outlined, size: 38);
     }
   }
 }
