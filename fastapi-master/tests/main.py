@@ -9,6 +9,7 @@ import azure.cognitiveservices.speech as speechsdk
 from difflib import *
 
 app = FastAPI()
+list = []
 
 
 def ran():
@@ -49,7 +50,6 @@ def get_article(n: int):
         l = len(sen)
         print("l = ", l)
         sentence = "\n"
-        list = []
         for i in sen:
             temp = ""
             sentence += i
@@ -90,7 +90,7 @@ async def example(example_num):
 
 
 @app.get('/result/{num}')
-async def _result(num: int):
+async def _result(num):
     file = "Audio{}.wav"
     speech_config = speechsdk.SpeechConfig(subscription="b751009eb5f545f8a4d0ce3cab8d7c71", region="eastasia")
     audio_config = speechsdk.audio.AudioConfig(filename=file.format(num))
@@ -99,12 +99,14 @@ async def _result(num: int):
     result = sen.text
     print("result = ", result)
     ratio = match(result, num)
-    return result, ratio
+    return num, ratio
 
 
 # sen為錄音檔中的文字內容，num為錄音檔對應到的句子編號
 def match(sen, num):
-    ans = list[num - 1]
+    print(list)
+    index = int(num) - 1
+    ans = list[index]
     ratio = SequenceMatcher(None, sen, ans).ratio()
     print("ans = ", ans)
     print("sen = ", sen)
