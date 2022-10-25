@@ -44,6 +44,7 @@ class AudioSession extends StatefulWidget {
 class _AudioSessionState extends State<AudioSession> {
   GlobalKey<_RefreshState> RecordingKey = GlobalKey(); //監聽
   int sen_num = 1;
+  int _selectedBottomBarItemIndex = 0;
   bool recordClick = true;
   bool playClick = true;
   bool recordPlayerClick = true;
@@ -62,7 +63,6 @@ class _AudioSessionState extends State<AudioSession> {
   }//end of init
 
   void startRecorder() async {
-    print("Start Recorder");
     var _startRecorderErr = false; // error indicator
 
     try {
@@ -122,7 +122,6 @@ class _AudioSessionState extends State<AudioSession> {
     } finally {
       if (_startRecorderErr) {
         setState(() {
-          print("141");
           stopRecorder();
           _isRecording = false;
           fsCancelRecorderSubscriptions();
@@ -131,6 +130,7 @@ class _AudioSessionState extends State<AudioSession> {
     }
   }//end of startRecorder
 
+  // get audio duration: (Web not work, its _duration = null)
   Future<void> getDuration() async {
     var path = _path;
     var d = path != null ? await flutterSoundHelper.duration(path) : null;
@@ -169,9 +169,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       recorderModule.logger.e('error: $err');
     }
-    setState(() {
-      print("187");
-    });
+    setState(() {});
   }//end of pauseResumeRecorder
 
   void Function()? onPauseResumeRecorderPressed() {
@@ -208,7 +206,6 @@ class _AudioSessionState extends State<AudioSession> {
     _encoderSupported = await recorderModule.isEncoderSupported(codec);
     _decoderSupported = await playerModule.isDecoderSupported(codec);
     setState(() {
-      print("225");
       _codec = codec;
     });
   }//end of setCodec
@@ -250,15 +247,11 @@ class _AudioSessionState extends State<AudioSession> {
             sampleRate: fsSAMPLERATE,
             whenFinished: () {
               playerModule.logger.d('Play finished');
-              setState(() {
-                print("268");
-              });
+              setState(() {});
             });
 
         _addListeners();
-        setState(() {
-          print("274");
-        });
+        setState(() {});
         playerModule.logger.d('<--- startPlayer');
       }
     } on Exception catch (err) {
@@ -278,9 +271,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.d('error: $err');
     }
-    setState(() { //錄音內容停止播放
-      print("296");
-    });
+    setState(() {});
   }//end of stopPlayer
 
   void pauseResumePlayer() async {
@@ -293,9 +284,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-    setState(() { // 錄音內容暫停播放
-      print("311");
-    });
+    setState(() {});
   }// end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
@@ -324,9 +313,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-    setState(() {
-      print("343");
-    });
+    setState(() {});
   }//end of seekToPlayer
 
   @override
@@ -376,9 +363,7 @@ class _AudioSessionState extends State<AudioSession> {
                       setCodec(newCodec!);
                       _codec = newCodec;
                       getDuration();
-                      setState(() {
-                        print("DropdownButton");
-                      });
+                      setState(() {});
                     },
                     items: snapshot.data.map<DropdownMenuItem<Codec>>((item) {
                       return DropdownMenuItem<Codec>(
@@ -530,11 +515,9 @@ class _AudioSessionState extends State<AudioSession> {
           height: 500,
           padding: const EdgeInsets.only(top: 10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(// player
                     children: [
@@ -612,13 +595,18 @@ class _AudioSessionState extends State<AudioSession> {
                         playerSection, // recordPlayer
                       ],
                     ),
-                    IconButton(
-                      iconSize: 38,
-                      color: Colors.blueAccent,
-                      onPressed: _uploadFile,
-                      icon: const Icon(Icons.publish),
-                    ),
                   ]
+              ),
+              Row(
+                children: [
+                  IconButton(
+                    iconSize: 38,
+                    color: Colors.blueAccent,
+                    onPressed: _uploadFile,
+                    icon: const Icon(Icons.publish),
+                  ),
+
+                ],
               ),
             ],
           ),
@@ -651,7 +639,7 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
+    final url = 'http://192.168.43.32:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -665,13 +653,13 @@ class _AudioSessionState extends State<AudioSession> {
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
+    var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
         'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
     var response = await request.send();
     if (response.statusCode == 200) {
-      print('Uploaded ...$sen_num');
+      print('Uploaded ...');
     } else {
       print('Something went wrong!');
     }
