@@ -37,12 +37,11 @@ class HomePageState extends State<HomePage> {
                 title: Text('練習',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),),
                 onTap: () {
-                  Navigator.pushNamed(context, '/article',arguments: 0);
+                  Navigator.pushNamed(context, '/audio',arguments: 0);
                 },
                 trailing: Icon(
                   Icons.play_arrow,
                   color: Colors.blueAccent,
-                  //semanticLabel: 'Play $audioRec[index].title audio',
                 ),
               ),
               ListTile(
@@ -54,19 +53,14 @@ class HomePageState extends State<HomePage> {
                 trailing: Icon(
                   Icons.play_arrow,
                   color: Colors.blueAccent,
-                  //semanticLabel: 'Play $audioRec[index].title audio',
                 ),
               ),
               ListTile(
                 title: Text('單字卡',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),),
-                // onTap: () {
-                //   Navigator.pushNamed(context, '/audio',arguments: 0);
-                // },
                 trailing: Icon(
                   Icons.play_arrow,
                   color: Colors.blueAccent,
-                  //semanticLabel: 'Play $audioRec[index].title audio',
                 ),
               ),
             ]
@@ -77,18 +71,6 @@ class HomePageState extends State<HomePage> {
       drawer: Drawer(
         child: ListView(
           children: const <Widget>[
-            // DrawerHeader(
-            //   decoration: BoxDecoration(
-            //     color: Colors.blue,
-            //   ),
-            //   child: Text(
-            //     'Drawer Header',
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: 24,
-            //     ),
-            //   ),
-            // ),
             ListTile(
               leading: Icon(Icons.account_circle),
               title: Text('Profile'),

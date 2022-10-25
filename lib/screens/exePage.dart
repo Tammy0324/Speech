@@ -25,7 +25,7 @@ double? _dbLevel; // volume
 bool? _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
 double? _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
-Codec _codec = FSAudioPlatform().defaultCodec; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
+Codec _codec = Codec.pcm16WAV; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
 
 /// set the file name, later will allow user input
 const String defaultFileName = "Audio";
@@ -42,8 +42,8 @@ class AudioSession extends StatefulWidget {
 }
 
 class _AudioSessionState extends State<AudioSession> {
+  GlobalKey<_RefreshState> RecordingKey = GlobalKey(); //監聽
   int sen_num = 1;
-  int _selectedBottomBarItemIndex = 0;
   bool recordClick = true;
   bool playClick = true;
   bool recordPlayerClick = true;
@@ -51,7 +51,6 @@ class _AudioSessionState extends State<AudioSession> {
   bool _isRecording = false; // initial recording status to not recording.
   String? _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
-  Future<List<Codec>>? _supportedCodec; // used future builder
 
 
   // initial
@@ -59,24 +58,11 @@ class _AudioSessionState extends State<AudioSession> {
     await fsInitializeRecorder();
     await fsInitializePlayer(false);
     await setCodec(_codec);
-    _supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
+    //_supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
   }//end of init
 
-  // get supported codec
-  Future<List<Codec>>platformSupportedCodec() async {
-    List<Codec> _supported=[];
-    for (var _codecX in Codec.values) {
-      // skip default codec which its ext is ""
-      if ( (ext[_codecX.index] != "")
-          && (await recorderModule.isEncoderSupported(_codecX))
-          && (await playerModule.isDecoderSupported(_codecX)) ) {
-        _supported.add(_codecX);
-      }
-    }
-    return _supported;
-  }// end of platformSupportedCodec
-
   void startRecorder() async {
+    print("Start Recorder");
     var _startRecorderErr = false; // error indicator
 
     try {
@@ -106,25 +92,24 @@ class _AudioSessionState extends State<AudioSession> {
         numChannels: 1,
         sampleRate: (_codec == Codec.pcm16) ? fsSAMPLERATE : fsSAMPLERATE_Low, /// non PCM canNOT use 44100, use lower sample rate 16000
       );
-      recorderModule.logger.d('startRecorder *happy*');
+      recorderModule.logger.d('startRecorder');
 
       // onProgress is a stream to post recorder status. api: https://tau.canardoux.xyz/tau_api_recorder_on_progress.html
       fsRecorderSubscription = recorderModule.onProgress!.listen((e) {
         var date = DateTime.fromMillisecondsSinceEpoch(
             e.duration.inMilliseconds,
             isUtc: true);
-        // var txt = DateFormat('mm:ss:SS', 'en_US').format(date);
-
-        setState(() {
-          //_recorderTxt = txt.substring(0, 8);
-          _dbLevel = e.decibels; // Volume value ranges from 0 to 120
-        });
+        _dbLevel = e.decibels;
       });
+      _isRecording = true;
+      _path = path;
+      RecordingKey.currentState?.onPressed(_isRecording);
 
-      setState(() {
-        _isRecording = true;
-        _path = path;
-      });
+      // setState(() { //按下錄音鍵
+      //   print("125");
+      //   _isRecording = true;
+      //   _path = path;
+      // });
     } on RecordingPermissionException catch (err_inst) {
       _startRecorderErr = true;
       recorderModule.logger.e('RecordingPermissionException error:' + err_inst.message);
@@ -137,6 +122,7 @@ class _AudioSessionState extends State<AudioSession> {
     } finally {
       if (_startRecorderErr) {
         setState(() {
+          print("141");
           stopRecorder();
           _isRecording = false;
           fsCancelRecorderSubscriptions();
@@ -145,12 +131,13 @@ class _AudioSessionState extends State<AudioSession> {
     }
   }//end of startRecorder
 
-  // get audio duration: (Web not work, its _duration = null)
   Future<void> getDuration() async {
     var path = _path;
     var d = path != null ? await flutterSoundHelper.duration(path) : null;
     _duration = d != null ? d.inMilliseconds / 1000.0 : null;
-    setState(() {});
+    // setState(() {
+    //   print("156");
+    // });
   }// end of getDuration
 
   void stopRecorder() async {
@@ -162,9 +149,13 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       recorderModule.logger.d('stopRecorder error: $err');
     }
-    setState(() {
-      _isRecording = false;
-    });
+    _isRecording = false;
+    RecordingKey.currentState?.onPressed(_isRecording);
+    //局部刷新！！！
+    // setState(() { //按下錄音結束鍵
+    //   print("170");
+    //   _isRecording = false;
+    // });
   }//end of stopRecorder
 
   void pauseResumeRecorder() async {
@@ -178,7 +169,9 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       recorderModule.logger.e('error: $err');
     }
-    setState(() {});
+    setState(() {
+      print("187");
+    });
   }//end of pauseResumeRecorder
 
   void Function()? onPauseResumeRecorderPressed() {
@@ -201,20 +194,21 @@ class _AudioSessionState extends State<AudioSession> {
     return startStopRecorder;
   }//end of onStartRecorderPressed
 
-  Icon recorderIcon() {
-
-    if (onStartRecorderPressed() == null) {
-      return Icon(Icons.mic_off_outlined);
-    }
-    return (recorderModule.isStopped)
-        ? Icon(Icons.mic_outlined)
-        : Icon(Icons.stop_outlined);
-  }//end of recorderIcon
+  // Icon recorderIcon() {
+  //
+  //   if (onStartRecorderPressed() == null) {
+  //     return Icon(Icons.mic_off_outlined);
+  //   }
+  //   return (recorderModule.isStopped)
+  //       ? Icon(Icons.mic_outlined)
+  //       : Icon(Icons.stop_outlined);
+  // }//end of recorderIcon
 
   Future<void> setCodec(Codec codec) async {
     _encoderSupported = await recorderModule.isEncoderSupported(codec);
     _decoderSupported = await playerModule.isDecoderSupported(codec);
     setState(() {
+      print("225");
       _codec = codec;
     });
   }//end of setCodec
@@ -234,10 +228,9 @@ class _AudioSessionState extends State<AudioSession> {
 
       var date = DateTime.fromMillisecondsSinceEpoch(e.position.inMilliseconds,
           isUtc: true);
-      // var txt = DateFormat('mm:ss:SS', 'en_US').format(date);
-      setState(() {
-        //_playerTxt = txt.substring(0, 8);
-      });
+      // setState(() { //播放錄音內容
+      //   print("246");
+      // });
     });
   }//end o _addListeners
 
@@ -257,11 +250,15 @@ class _AudioSessionState extends State<AudioSession> {
             sampleRate: fsSAMPLERATE,
             whenFinished: () {
               playerModule.logger.d('Play finished');
-              setState(() {});
+              setState(() {
+                print("268");
+              });
             });
 
         _addListeners();
-        setState(() {});
+        setState(() {
+          print("274");
+        });
         playerModule.logger.d('<--- startPlayer');
       }
     } on Exception catch (err) {
@@ -281,7 +278,9 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.d('error: $err');
     }
-    setState(() {});
+    setState(() { //錄音內容停止播放
+      print("296");
+    });
   }//end of stopPlayer
 
   void pauseResumePlayer() async {
@@ -294,7 +293,9 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-    setState(() {});
+    setState(() { // 錄音內容暫停播放
+      print("311");
+    });
   }// end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
@@ -316,7 +317,6 @@ class _AudioSessionState extends State<AudioSession> {
   }//end of onStopPlayerPressed
 
   Future<void> seekToPlayer(int milliSecs) async {
-    //playerModule.logger.d('-->seekToPlayer');
     try {
       if (playerModule.isPlaying) {
         await playerModule.seekToPlayer(Duration(milliseconds: milliSecs));
@@ -324,7 +324,9 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-    setState(() {});
+    setState(() {
+      print("343");
+    });
   }//end of seekToPlayer
 
   @override
@@ -342,13 +344,6 @@ class _AudioSessionState extends State<AudioSession> {
     fsReleaseFlutterSoundPlayerSession();
   }
 
-  void _onBottomBarItemTapped(int index) {
-    setState(() {
-      _selectedBottomBarItemIndex = index;
-    });
-  }
-
-  IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
 
   int article_len = 0;
@@ -357,7 +352,7 @@ class _AudioSessionState extends State<AudioSession> {
   Widget build(BuildContext context) {
     // Codec Selection
     Widget futureCodecSelect = FutureBuilder<List<Codec>>(
-      future: _supportedCodec,
+      //future: _supportedCodec,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData) {
           return Container(
@@ -366,14 +361,6 @@ class _AudioSessionState extends State<AudioSession> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  // Padding(
-                  //   padding: const EdgeInsets.only(right: 5.0),
-                  //   // child: Text(
-                  //   //   S.of(context).new_audio_codec,
-                  //   //   style: Theme.of(context).textTheme.bodyText2!
-                  //   //       .apply(color: Theme.of(context).colorScheme.primary),
-                  //   // ),
-                  // ),
                   DropdownButton<Codec>(
                     value: _codec,
                     underline: Container(height: 0),
@@ -389,7 +376,9 @@ class _AudioSessionState extends State<AudioSession> {
                       setCodec(newCodec!);
                       _codec = newCodec;
                       getDuration();
-                      setState(() {});
+                      setState(() {
+                        print("DropdownButton");
+                      });
                     },
                     items: snapshot.data.map<DropdownMenuItem<Codec>>((item) {
                       return DropdownMenuItem<Codec>(
@@ -401,27 +390,9 @@ class _AudioSessionState extends State<AudioSession> {
                 ],
               )
           );
-        } else if (snapshot.hasError) {
-          return Container(
-            height: 50,
-            // child: Center(
-            //     child: Text(
-            //       S.of(context).new_audio_codec_loading_error,
-            //       style: Theme.of(context).textTheme.bodyText2!
-            //           .apply(color: Theme.of(context).colorScheme.primary),
-            //     )
-            // )
-          );
         } else {
           return Container(
             height: 50,
-            // child: Center(
-            //     child: Text(
-            //       S.of(context).new_audio_codec_loading,
-            //       style: Theme.of(context).textTheme.bodyText2!
-            //           .apply(color: Theme.of(context).colorScheme.primaryVariant),
-            //     )
-            // )
           );
         }
       },
@@ -432,21 +403,6 @@ class _AudioSessionState extends State<AudioSession> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
-          // Container(
-          //   margin: const EdgeInsets.only(top: 12.0, bottom: 3.0),
-          //   child: Text(
-          //     _recorderTxt,
-          //     style: Theme.of(context).textTheme.headline5!
-          //         .apply(color: Theme.of(context).colorScheme.primary),
-          //   ),
-          // ),
-          Container(
-            margin: EdgeInsets.only(top: 3.0, bottom: 6.0),
-            child: Text(
-              _recMsg,
-              style: Theme.of(context).textTheme.subtitle1,
-            ),
-          ),
           (_isRecording && !kIsWeb) /// Flutter_sound not support web recording volume
               ? Container(
               margin: const EdgeInsets.only(left: 5.0, right: 5.0),
@@ -470,7 +426,7 @@ class _AudioSessionState extends State<AudioSession> {
                 child: ClipOval(
                   child: TextButton(
                     onPressed: onStartRecorderPressed(),
-                    child: recorderIcon(),
+                    child: Refresh(RecordingKey),
                   ),
                 ),
               ),
@@ -496,13 +452,6 @@ class _AudioSessionState extends State<AudioSession> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        // Container(
-        //   margin: const EdgeInsets.only(top: 12.0, bottom: 16.0),
-        //   child: Text(
-        //     _playerTxt,
-        //     style: Theme.of(context).textTheme.headline5!.apply(color: Theme.of(context).colorScheme.primary),
-        //   ),
-        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -541,11 +490,6 @@ class _AudioSessionState extends State<AudioSession> {
                   await seekToPlayer(value.toInt());
                 },
                 divisions: fsMaxDuration == 0.0 ? 1 : fsMaxDuration.toInt())),
-        // Container(
-        //   height: 30.0,
-        //   child: Text('null'),
-        //   // child: Text(_duration != null ? S.of(context).new_audio_duration( new NumberFormat.compact().format(_duration)) : ''),
-        // ),
       ],
     );
 
@@ -586,9 +530,11 @@ class _AudioSessionState extends State<AudioSession> {
           height: 500,
           padding: const EdgeInsets.only(top: 10.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Column(// player
                     children: [
@@ -666,22 +612,18 @@ class _AudioSessionState extends State<AudioSession> {
                         playerSection, // recordPlayer
                       ],
                     ),
+                    IconButton(
+                      iconSize: 38,
+                      color: Colors.blueAccent,
+                      onPressed: _uploadFile,
+                      icon: const Icon(Icons.publish),
+                    ),
                   ]
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    iconSize: 38,
-                    color: Colors.blueAccent,
-                    onPressed: _uploadFile,
-                    icon: const Icon(Icons.publish),
-                  ),
-
-                ],
               ),
             ],
           ),
-        ));
+        )
+    );
   }
 
   previous() {
@@ -709,7 +651,7 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://192.168.43.32:8000/example/$sen_num';
+    final url = 'http://172.20.10.10:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -723,15 +665,47 @@ class _AudioSessionState extends State<AudioSession> {
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
+    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
-        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num.aac'));
+        'file', '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
     var response = await request.send();
     if (response.statusCode == 200) {
-      print('Uploaded ...');
+      print('Uploaded ...$sen_num');
     } else {
       print('Something went wrong!');
+    }
+  }
+}
+
+//封装的widget
+class Refresh extends StatefulWidget {
+  final Key key;
+
+  const Refresh(this.key);
+
+  @override
+  _RefreshState createState() => _RefreshState();
+}
+
+class _RefreshState extends State<Refresh> {
+  String text = "0";
+  bool S = false;
+
+  void onPressed(bool state) {
+    setState((){
+      S = state;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (S == true) { //錄音中
+      print("Recorder State: true");
+      return Icon(Icons.stop_outlined, size: 38);
+    } else {
+      print("Recorder State: false");
+      return Icon(Icons.mic_outlined, size: 38);
     }
   }
 }
