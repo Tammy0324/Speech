@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io'; // use to get Platform info & check file exist, can't use on web
 import 'dart:math';
 
@@ -723,41 +724,98 @@ class _AudioSessionState extends State<AudioSession> {
         '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
     var response = await request.send();
     if (response.statusCode == 200) {
-      _onLoading();
+      show();
       print('Uploaded ...');
     } else {
       print('Something went wrong!');
     }
   }
 
-  void _onLoading() {
+  Future getPosts() async {
+    var url = 'http://192.168.43.32:8000/result/$sen_num';
+    final client = HttpClient();
+    final request = await client.getUrl(Uri.parse(url));
+    var response = await request.close();
+    if (response.statusCode == 200) {
+      var responseBody = await response.transform(utf8.decoder).join();
+      return responseBody.split("\\n");
+    } else {
+      print('Something went wrong!');
+    }
+  }
+
+  void show() {
     showDialog(
       context: context,
-      barrierDismissible: false,
+      barrierDismissible: true,
       builder: (BuildContext context) {
-        Future.delayed(Duration(seconds: 2), () {
-          Navigator.of(context).pop(true);
-        });
         return Dialog(
-          child: Container(
-            width: 50,
-            height: 300,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                CircularProgressIndicator(),
-                SizedBox(
-                  height: 10,
-                  width: 10,
-                ),
-                Text(
-                  'Loading...',
-                  style: TextStyle(
-                    fontSize: 25,
+          child: FutureBuilder(
+            future: getPosts(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  constraints: const BoxConstraints(
+                      maxWidth: 300,
+                      maxHeight: 300,
+                      minWidth: 50,
+                      minHeight: 50),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const ListTile(
+                          title: Text('辨識結果：',
+                              style: TextStyle(fontWeight: FontWeight.bold))),
+                      Expanded(
+                        child: ListView.builder(
+                            itemCount: snapshot.data.length,
+                            itemBuilder: (BuildContext context, int num) {
+                              var ratio = snapshot.data[num];
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    ratio,
+                                    style: TextStyle(fontSize: 25),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                              );
+                            }),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text("取消",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20))),
+                        ],
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
+                );
+              } else {
+                return Container(
+                  width: 50,
+                  height: 300,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                      SizedBox(
+                        height: 10,
+                        width: 10,
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
           ),
         );
       },
