@@ -573,7 +573,7 @@ class _AudioSessionState extends State<AudioSession> {
                                   play()
                                 },
                                 child:
-                                  Text("$sen", style: TextStyle(fontSize: 25)),
+                                  Text("$sen_num  $sen", style: TextStyle(fontSize: 25)),
                                   // style: ,
                               )
                             ],
