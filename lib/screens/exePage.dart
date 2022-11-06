@@ -559,26 +559,20 @@ class _AudioSessionState extends State<AudioSession> {
             if (snapshot.hasData) {
               List<String> posts = snapshot.data;
               article_len = posts.length-2;
-              var sen = posts[sen_num];
               return Center(
                   child: ListView.builder(
                       itemCount: posts.length,
                       itemBuilder: (BuildContext context, int num) {
-                        // var sen = posts[num];
+                        var sen = posts[num];
                         return Center(
-                          child: Column(
-                            children: <Widget>[
-                              TextButton(
+                              child:TextButton(
                                 onPressed: () => {
-                                  play()
+                                  play(int)
                                 },
                                 child:
-                                  Text("$sen_num  $sen", style: TextStyle(fontSize: 25)),
+                                  Text("$num  $sen", style: TextStyle(fontSize: 25)),
                                   // style: ,
-                              )
-                            ],
-                          )
-                          // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
+                              ) // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                         );
                       }
                   )
@@ -719,12 +713,11 @@ class _AudioSessionState extends State<AudioSession> {
     return sen_num;
   }
 
-  Future<void> play() async {
-    print('Speech $sen_num');
+  Future<void> play(int num) async {
+    print('Speech $num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
-    DownloadService downloadService =
-    kIsWeb ? WebDownloadService() : MobileDownloadService();
+    final url = 'http://172.20.10.10:8000/example/$num';
+    DownloadService downloadService = kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
 
     Dio dio = Dio();
