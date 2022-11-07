@@ -355,7 +355,7 @@ class _AudioSessionState extends State<AudioSession> {
   AudioPlayer player = AudioPlayer();
 
   int article_len = 0;
-
+  List<bool> _flag = [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true];
   @override
   Widget build(BuildContext context) {
     // Codec Selection
@@ -565,14 +565,14 @@ class _AudioSessionState extends State<AudioSession> {
                       itemBuilder: (BuildContext context, int num) {
                         var sen = posts[num];
                         return Center(
-                              child:TextButton(
-                                onPressed: () => {
-                                  sen_play(num)
-                                },
-                                child:
-                                  Text("$num  $sen", style: TextStyle(fontSize: 25)),
-                                  // style: ,
-                              ) // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
+                            child:TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: _flag[num] ? Colors.white : Colors.purple,
+                              ),
+                              onPressed: () { setState(() => _flag[num] = !_flag[num]);sen_play(num);},
+                              child:
+                              Text("$num  $sen", style: TextStyle(fontSize: 25,color: Colors.black)), // style: ,
+                            ) // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                         );
                       }
                   )
@@ -716,7 +716,7 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://192.168.1.103:8000/example/$sen_num';
+    final url = 'http://172.20.10.4:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -726,12 +726,10 @@ class _AudioSessionState extends State<AudioSession> {
     String fileName = 'example';
     player.play('${dir.path}/$fileName');
   }
-
-    //單句播放
-    Future<void> sen_play(int num) async {
+  Future<void> sen_play(int num) async {
     print('Speech $num');
 
-    final url = 'http://192.168.1.103:8000/example/$num';
+    final url = 'http://172.20.10.4:8000/example/$num';
     DownloadService downloadService = kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
 
@@ -740,7 +738,6 @@ class _AudioSessionState extends State<AudioSession> {
     String fileName = 'example';
     player.play('${dir.path}/$fileName');
   }
-
 
   List<PlatformFile>? _files;
 
