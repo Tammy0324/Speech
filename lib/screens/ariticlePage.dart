@@ -13,8 +13,8 @@ class _Article extends State<Article> {
     return Scaffold(
       appBar: AppBar(
         title:
-           Text("練習"),
-        ),
+        Text("練習"),
+      ),
       body: FutureBuilder(
           future: httpService.getPosts(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -26,14 +26,14 @@ class _Article extends State<Article> {
                       itemBuilder: (BuildContext context, int num) {
                         var sen = posts[num];
                         return Center(
-                          child: TextButton(
-                          child: Text(
-                            sen,
-                            style: TextStyle(fontSize: 25,color: Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                            onPressed: () {Navigator.pushNamed(context, '/audio',arguments: 0);},
-                        )
+                            child: TextButton(
+                              child: Text(
+                                sen,
+                                style: TextStyle(fontSize: 25,color: Colors.black),
+                                textAlign: TextAlign.center,
+                              ),
+                              onPressed: () {Navigator.pushNamed(context, '/audio',arguments: 0);},
+                            )
                         );
                       }
                   )
