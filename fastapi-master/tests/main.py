@@ -30,6 +30,8 @@ def get_article(n: int):
         article.update(dic)
 
     else:
+        print("\nget_article : ")
+        list.clear()
         url = "https://www.eslfast.com/kidsenglish/ke/ke{}.htm"
         r = requests.get(url.format(article['article_num']))
         soup = BeautifulSoup(r.text, "html.parser")
@@ -69,6 +71,7 @@ get_article(0)
 def create_item():
     ran()
     get_article(1)
+    print("\n/article : ")
     print(article)
     return article['sen']
 
@@ -104,6 +107,7 @@ async def _result(num):
 
 # sen為錄音檔中的文字內容，num為錄音檔對應到的句子編號
 def match(sen, num):
+    print("\nmatch : ")
     print(list)
     index = int(num) - 1
     ans = list[index]
