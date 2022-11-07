@@ -566,12 +566,12 @@ class _AudioSessionState extends State<AudioSession> {
                         var sen = posts[num];
                         return Center(
                             child:TextButton(
+                              child:
+                              Text("$num  $sen", style: TextStyle(fontSize: 25,color: Colors.black)),
                               style: TextButton.styleFrom(
                                 backgroundColor: _flag[num] ? Colors.white : Colors.purple,
                               ),
-                              onPressed: () { setState(() => _flag[num] = !_flag[num]);sen_play(num);},
-                              child:
-                              Text("$num  $sen", style: TextStyle(fontSize: 25,color: Colors.black)), // style: ,
+                              onPressed: () { setState(() => _flag[num] = !_flag[num]);sen_play(num);}, // style: ,
                             ) // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                         );
                       }
