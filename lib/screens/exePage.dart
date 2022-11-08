@@ -711,7 +711,7 @@ class _AudioSessionState extends State<AudioSession> {
                         children: [
                           TextButton(
                               onPressed: () => Navigator.of(context).pop(),
-                              child: Text("取消",
+                              child: Text("關閉",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20))),
