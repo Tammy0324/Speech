@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:project/generated/l10n.dart';
 import 'dart:async';
 
+import 'package:project/screens/testexepage.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -33,7 +35,8 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(title:'主頁'),
         '/article': (context) => Article(),
         '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
-        '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
+        '/new_audio': (context) =>AudioSession1(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
+        // '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
       },
     );
   }
