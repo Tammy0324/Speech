@@ -33,11 +33,12 @@ class MyApp extends StatelessWidget {
         '/': (context) => HomePage(title:'主頁'),
         '/article': (context) => Article(),
         '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
-        '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
+
       },
     );
   }
 }
+
 
 
 

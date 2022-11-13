@@ -355,7 +355,6 @@ class _AudioSessionState extends State<AudioSession> {
   AudioPlayer player = AudioPlayer();
 
   int article_len = 0;
-  List<bool> _flag = [true,true,true,true,true,true,true,true,true,true,true,true,true,true,true];
   @override
   Widget build(BuildContext context) {
     // Codec Selection
@@ -568,10 +567,7 @@ class _AudioSessionState extends State<AudioSession> {
                             child:TextButton(
                               child:
                               Text("$num  $sen", style: TextStyle(fontSize: 25,color: Colors.black)),
-                              style: TextButton.styleFrom(
-                                backgroundColor: _flag[num] ? Colors.white : Colors.purple,
-                              ),
-                              onPressed: () { setState(() => _flag[num] = !_flag[num]);sen_play(num);}, // style: ,
+                              onPressed: () => {sen_play(num)}, // style: ,
                             ) // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
                         );
                       }
@@ -646,6 +642,14 @@ class _AudioSessionState extends State<AudioSession> {
                       ),
                       Text(
                         'Next',
+                        style: TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                      ),
+                    ],
+                  ),
+                  Column(// player
+                    children: [
+                      Text(
+                        '$sen_num',
                         style: TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
                       ),
                     ],
@@ -737,6 +741,7 @@ class _AudioSessionState extends State<AudioSession> {
     var dir = await getApplicationDocumentsDirectory();
     String fileName = 'example';
     player.play('${dir.path}/$fileName');
+    sen_num=num;
   }
 
   List<PlatformFile>? _files;
