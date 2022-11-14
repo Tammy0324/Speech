@@ -69,11 +69,11 @@ article = {}
 get_article(0)
 
 
-@app.get('/article', response_class=PlainTextResponse)
+@app.get('/article')
 def create_item():
     ran()
     get_article(1)
-    print("\n/article : ")
+    print("article : ")
     print(article)
     return article['sen']
 
@@ -93,7 +93,7 @@ async def example(example_num):
     return FileResponse(filePath.format(article['article_num'], example_num))
 
 
-@app.get('/result/{num}', response_class=PlainTextResponse)
+@app.get('/result/{num}')
 async def _result(num):
     file = "Audio{}.wav"
     speech_config = speechsdk.SpeechConfig(subscription="b751009eb5f545f8a4d0ce3cab8d7c71", region="eastasia")
