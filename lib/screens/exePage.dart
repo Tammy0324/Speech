@@ -370,13 +370,6 @@ class _AudioSessionState extends State<AudioSession> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
-        // Container(
-        //   margin: const EdgeInsets.only(top: 12.0, bottom: 16.0),
-        //   child: Text(
-        //     _playerTxt,
-        //     style: Theme.of(context).textTheme.headline5!.apply(color: Theme.of(context).colorScheme.primary),
-        //   ),
-        // ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -427,10 +420,13 @@ class _AudioSessionState extends State<AudioSession> {
                           child: TextButton(
                             onPressed: () => {sen_play(num)},
                             child: Text("$num  $sen",
+                                textAlign: TextAlign.center,
                                 style:
-                                TextStyle(fontSize: 25, color: Colors.black)
+                                TextStyle(fontSize: 25,
+                                    color: Colors.black,
+                                )
                             ),
-                          ), // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
+                          ),
                         );
                       }
                     }));
@@ -448,7 +444,7 @@ class _AudioSessionState extends State<AudioSession> {
             Column(
               // player
               children: [
-                Text(
+                const Text(
                     "當前句子編號：\n",
                   style:
                   TextStyle(
@@ -457,13 +453,6 @@ class _AudioSessionState extends State<AudioSession> {
                   ),
                 ),
                 SenNumState(SenNumKey),
-                // Text(
-                //   '$sen_num',
-                //   style:
-                //   TextStyle(
-                //     fontSize: 35,
-                //   ),
-                // ),
               ],
             ),
             const SizedBox(
