@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io'; // use to get Platform info & check file exist, can't use on web
 import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart' show kIsWeb; // only use kIsWeb
@@ -15,6 +16,7 @@ import 'package:project/generated/l10n.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the common part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the player part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_record.dart'; // the recording part of flutter_sound
+
 import '../http_service.dart';
 
 /// Happy recorder - record audio into FILE only.
@@ -36,6 +38,7 @@ class AudioSession extends StatefulWidget {
 
   // do we need key?
   AudioSession({Key? key, required this.arIndex}) : super(key: key);
+
   //AudioSession({required this.arIndex});
 
   @override
@@ -54,13 +57,12 @@ class _AudioSessionState extends State<AudioSession> {
   String? _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
 
-
   // initial
   Future<void> init() async {
     await fsInitializeRecorder();
     await fsInitializePlayer(false);
     //_supportedCodec = platformSupportedCodec(); // Supported Codecs list, a future
-  }//end of init
+  } //end of init
 
   // get supported codec
   // Future<List<Codec>>platformSupportedCodec() async {
@@ -90,9 +92,11 @@ class _AudioSessionState extends State<AudioSession> {
         }
       }
       var path = "";
-      _recMsg = '$defaultFileName$sen_num${ext[_codec.index]}'; // recoding message = file name
+      _recMsg =
+          '$defaultFileName$sen_num${ext[_codec.index]}'; // recoding message = file name
       if (!kIsWeb) {
-        var tempDir = await getExternalStorageDirectory();  // need path_provider package
+        var tempDir =
+            await getExternalStorageDirectory(); // need path_provider package
         path = '${tempDir?.path}/$_recMsg';
       } else {
         path = '_$_recMsg';
@@ -102,9 +106,13 @@ class _AudioSessionState extends State<AudioSession> {
       await recorderModule.startRecorder(
         toFile: path,
         codec: _codec,
-        bitRate: 16384, /// is K bit/s? aac sample rate 16k need 16K bit rate, 8k bit rate can do only 8000 sample rate.
+        bitRate: 16384,
+
+        /// is K bit/s? aac sample rate 16k need 16K bit rate, 8k bit rate can do only 8000 sample rate.
         numChannels: 1,
-        sampleRate: (_codec == Codec.pcm16) ? fsSAMPLERATE : fsSAMPLERATE_Low, /// non PCM canNOT use 44100, use lower sample rate 16000
+        sampleRate: (_codec == Codec.pcm16) ? fsSAMPLERATE : fsSAMPLERATE_Low,
+
+        /// non PCM canNOT use 44100, use lower sample rate 16000
       );
       recorderModule.logger.d('startRecorder');
 
@@ -117,11 +125,11 @@ class _AudioSessionState extends State<AudioSession> {
         _isRecording = true;
         _path = path;
         RecordingKey.currentState?.onPressed(_isRecording);
-      }
-      );
+      });
     } on RecordingPermissionException catch (err_inst) {
       _startRecorderErr = true;
-      recorderModule.logger.e('RecordingPermissionException error:' + err_inst.message);
+      recorderModule.logger
+          .e('RecordingPermissionException error:' + err_inst.message);
       _recMsg = err_inst.message;
     } catch (err, s) {
       // all other error
@@ -138,7 +146,7 @@ class _AudioSessionState extends State<AudioSession> {
         });
       }
     }
-  }//end of startRecorder
+  } //end of startRecorder
 
   // get audio duration: (Web not work, its _duration = null)
   // Future<void> getDuration() async {
@@ -159,7 +167,7 @@ class _AudioSessionState extends State<AudioSession> {
     }
     _isRecording = false;
     RecordingKey.currentState?.onPressed(_isRecording);
-  }//end of stopRecorder
+  } //end of stopRecorder
 
   void pauseResumeRecorder() async {
     try {
@@ -175,7 +183,7 @@ class _AudioSessionState extends State<AudioSession> {
     setState(() {
       print("176");
     });
-  }//end of pauseResumeRecorder
+  } //end of pauseResumeRecorder
 
   // void Function()? onPauseResumeRecorderPressed() {
   //   if (recorderModule.isPaused || recorderModule.isRecording) {
@@ -190,12 +198,13 @@ class _AudioSessionState extends State<AudioSession> {
     } else {
       startRecorder();
     }
-  }//end of startStopRecorder
+  } //end of startStopRecorder
 
   void Function()? onStartRecorderPressed() {
-    if (!_encoderSupported!) return null; // null: disable the button when selected codec not supported
+    if (!_encoderSupported!)
+      return null; // null: disable the button when selected codec not supported
     return startStopRecorder;
-  }//end of onStartRecorderPressed
+  } //end of onStartRecorderPressed
 
   // Icon recorderIcon() {
   //
@@ -237,20 +246,22 @@ class _AudioSessionState extends State<AudioSession> {
       //   //_playerTxt = txt.substring(0, 8);
       // });
     });
-  }//end o _addListeners
+  } //end o _addListeners
 
   Future<void> startPlayer() async {
     try {
       String? audioFilePath;
 
-      if (kIsWeb || await File(_path!).exists() ) { // if not web, check file exists?
+      if (kIsWeb || await File(_path!).exists()) {
+        // if not web, check file exists?
         audioFilePath = _path;
         print(audioFilePath);
       }
 
       if (audioFilePath != null) {
         await playerModule.startPlayer(
-            fromURI: audioFilePath, // play a file or a remote URI (just put the url in)
+            fromURI: audioFilePath,
+            // play a file or a remote URI (just put the url in)
             codec: _codec,
             sampleRate: fsSAMPLERATE,
             whenFinished: () {
@@ -265,7 +276,7 @@ class _AudioSessionState extends State<AudioSession> {
     } on Exception catch (err) {
       playerModule.logger.e('error: $err');
     }
-  }//end of startPlayer
+  } //end of startPlayer
 
   Future<void> stopPlayer() async {
     try {
@@ -280,7 +291,7 @@ class _AudioSessionState extends State<AudioSession> {
       playerModule.logger.d('error: $err');
     }
     PlayingKey.currentState?.onPressed();
-  }//end of stopPlayer
+  } //end of stopPlayer
 
   void pauseResumePlayer() async {
     try {
@@ -293,7 +304,7 @@ class _AudioSessionState extends State<AudioSession> {
       playerModule.logger.e('error: $err');
     }
     PlayingKey.currentState?.onPressed();
-  }// end of pauseResumePlayer
+  } // end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
   void Function()? onStartPauseResumePlayerPressed() {
@@ -302,16 +313,17 @@ class _AudioSessionState extends State<AudioSession> {
     // /// why force Codec.pcm16 always = enabled?
     // if (!(_decoderSupported || _codec == Codec.pcm16)) return null;
     if (playerModule.isStopped) return startPlayer;
-    if (playerModule.isPaused || playerModule.isPlaying) return pauseResumePlayer;
+    if (playerModule.isPaused || playerModule.isPlaying)
+      return pauseResumePlayer;
 
     //return null; // catch all, just disable btn
-  }//end of onStartPauseResumePlayerPressed
+  } //end of onStartPauseResumePlayerPressed
 
   void Function()? onStopPlayerPressed() {
     return (playerModule.isPlaying || playerModule.isPaused)
         ? stopPlayer
         : null;
-  }//end of onStopPlayerPressed
+  } //end of onStopPlayerPressed
 
   Future<void> seekToPlayer(int milliSecs) async {
     //playerModule.logger.d('-->seekToPlayer');
@@ -325,7 +337,7 @@ class _AudioSessionState extends State<AudioSession> {
     setState(() {
       print("326");
     });
-  }//end of seekToPlayer
+  } //end of seekToPlayer
 
   @override
   void initState() {
@@ -341,7 +353,6 @@ class _AudioSessionState extends State<AudioSession> {
     fsReleaseFlutterSoundRecorderSession();
     fsReleaseFlutterSoundPlayerSession();
   }
-
 
   IconData micicon = Icons.mic_outlined;
   AudioPlayer player = AudioPlayer();
@@ -363,18 +374,23 @@ class _AudioSessionState extends State<AudioSession> {
           //         .apply(color: Theme.of(context).colorScheme.primary),
           //   ),
           // ),
-          (_isRecording && !kIsWeb) /// Flutter_sound not support web recording volume
+          (_isRecording && !kIsWeb)
+
+              /// Flutter_sound not support web recording volume
               ? Container(
-              margin: const EdgeInsets.only(left: 5.0, right: 5.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                      width: 1,
-                      color: Theme.of(context).colorScheme.primary)),
-              child: LinearProgressIndicator(
-                  minHeight: 10.0,
-                  value: 1.0 / 120.0 * (_dbLevel ?? 1), // _dbLevel ranges from 0 to 120, ?? = if null
-                  valueColor: AlwaysStoppedAnimation<Color>( Theme.of(context).colorScheme.primary),
-                  backgroundColor: Theme.of(context).colorScheme.background))
+                  margin: const EdgeInsets.only(left: 5.0, right: 5.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          width: 1,
+                          color: Theme.of(context).colorScheme.primary)),
+                  child: LinearProgressIndicator(
+                      minHeight: 10.0,
+                      value: 1.0 / 120.0 * (_dbLevel ?? 1),
+                      // _dbLevel ranges from 0 to 120, ?? = if null
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).colorScheme.primary),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.background))
               : Container(margin: EdgeInsets.only(top: 12)),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -430,18 +446,18 @@ class _AudioSessionState extends State<AudioSession> {
                 child: TextButton(
                   onPressed: onStartPauseResumePlayerPressed(),
                   child: PlayerState(PlayingKey),
+                ),
               ),
-            ),
-            // Container(
-            //   width: 56.0,
-            //   height: 50.0,
-            //   child: ClipOval(
-            //     child: TextButton(
-            //         onPressed: onStopPlayerPressed(),
-            //         child: (playerModule.isPlaying || playerModule.isPaused)
-            //             ? Icon(Icons.stop_outlined,size: 38)
-            //             : Container()),
-            //   ),
+              // Container(
+              //   width: 56.0,
+              //   height: 50.0,
+              //   child: ClipOval(
+              //     child: TextButton(
+              //         onPressed: onStopPlayerPressed(),
+              //         child: (playerModule.isPlaying || playerModule.isPaused)
+              //             ? Icon(Icons.stop_outlined,size: 38)
+              //             : Container()),
+              //   ),
             ),
           ],
         ),
@@ -466,138 +482,155 @@ class _AudioSessionState extends State<AudioSession> {
     final Connect httpService = Connect();
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(""),
-          // automaticallyImplyLeading: false, // not display <- back btn
-        ),
-        body: FutureBuilder(
-          future: httpService.getPosts(),
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasData) {
-              List<String> posts = snapshot.data;
-              article_len = posts.length-2;
-              return Center(
-                  child: ListView.builder(
-                      itemCount: posts.length,
-                      itemBuilder: (BuildContext context, int num) {
-                        var sen = posts[num];
-                        return Center(
-                          child: Text(
-                            sen,
-                            style: TextStyle(fontSize: 25),
-                            textAlign: TextAlign.center,
-                          ),
-                        );
-                      }
-                  )
-              );
-            } else {
-              return Center(child: Text("No Data."));
-            }
-          },
-        ),
-        bottomNavigationBar: Container(
-          height: 500,
-          padding: const EdgeInsets.only(top: 10.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
+      appBar: AppBar(
+        title: Text(""),
+        // automaticallyImplyLeading: false, // not display <- back btn
+      ),
+      body: FutureBuilder(
+        future: httpService.getPosts(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            List<String> posts = snapshot.data;
+            article_len = posts.length - 2;
+            return Center(
+                child: ListView.builder(
+                    itemCount: posts.length,
+                    itemBuilder: (BuildContext context, int num) {
+                      var sen = posts[num];
+                      return Center(
+                        child: TextButton(
+                          onPressed: () => {sen_play(num)},
+                          child: Text("$num  $sen",
+                              style:
+                                  TextStyle(fontSize: 25, color: Colors.black)),
+                        ), // Text("$sen_num $sen", style: TextStyle(fontSize: 25), textAlign: TextAlign.center,),
+                      );
+                    }));
+          } else {
+            return Center(child: Text("No Data."));
+          }
+        },
+      ),
+      bottomNavigationBar: Container(
+        height: 500,
+        padding: const EdgeInsets.only(top: 10.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Column(
+                  // player
+                  children: [
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        iconSize: 38,
+                        color: Colors.blueAccent,
+                        onPressed: previous,
+                        icon: const Icon(Icons.skip_previous),
+                      ),
+                    ),
+                    Text(
+                      'Previous',
+                      style:
+                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                    ),
+                  ],
+                ),
+                Column(
+                  // player
+                  children: [
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        iconSize: 38,
+                        color: Colors.blueAccent,
+                        onPressed: play,
+                        icon: const Icon(Icons.headphones_outlined),
+                      ),
+                    ),
+                    Text(
+                      'Play',
+                      style:
+                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                    ),
+                  ],
+                ),
+                Column(
+                  // player
+                  children: [
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: Colors.white,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        iconSize: 38,
+                        color: Colors.blueAccent,
+                        onPressed: next,
+                        icon: const Icon(Icons.skip_next),
+                      ),
+                    ),
+                    Text(
+                      'Next',
+                      style:
+                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                    ),
+                  ],
+                ),
+                Column(
+                  // player
+                  children: [
+                    Text(
+                      '$sen_num',
+                      style:
+                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Column(// player
+                  Column(
+                    //Recorder
                     children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          iconSize: 38,
-                          color: Colors.blueAccent,
-                          onPressed: previous,
-                          icon: const Icon( Icons.skip_previous),
-                        ),
-                      ),
-                      Text(
-                        'Previous',
-                        style: TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                      ),
+                      //kIsWeb ? Container() : futureCodecSelect,
+                      recorderSection, // recording
                     ],
                   ),
-                  Column(// player
+                  Column(
+                    //Record Player
                     children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          iconSize: 38,
-                          color: Colors.blueAccent,
-                          onPressed:play,
-                          icon: const Icon( Icons.headphones_outlined),
-                        ),
-                      ),
-                      Text(
-                        'Play',
-                        style: TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                      ),
+                      //kIsWeb ? Container() : futureCodecSelect,
+                      playerSection, // recordPlayer
                     ],
                   ),
-                  Column(// player
-                    children: [
-                      Ink(
-                        decoration: const ShapeDecoration(
-                          color: Colors.white,
-                          shape: CircleBorder(),
-                        ),
-                        child: IconButton(
-                          iconSize: 38,
-                          color: Colors.blueAccent,
-                          onPressed:next,
-                          icon: const Icon( Icons.skip_next),
-                        ),
-                      ),
-                      Text(
-                        'Next',
-                        style: TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                      ),
-                    ],
+                  IconButton(
+                    iconSize: 38,
+                    color: Colors.blueAccent,
+                    onPressed: _uploadFile,
+                    icon: const Icon(Icons.publish),
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Column( //Recorder
-                      children: [
-                        //kIsWeb ? Container() : futureCodecSelect,
-                        recorderSection, // recording
-                      ],
-                    ),
-                    Column( //Record Player
-                      children: [
-                        //kIsWeb ? Container() : futureCodecSelect,
-                        playerSection, // recordPlayer
-                      ],
-                    ),
-                    IconButton(
-                      iconSize: 38,
-                      color: Colors.blueAccent,
-                      onPressed: _uploadFile,
-                      icon: const Icon(Icons.publish),
-                    ),
-                  ]
-              ),
-            ],
-          ),
-        ));
+                ]),
+          ],
+        ),
+      ),
+    );
   }
 
   previous() {
@@ -625,9 +658,9 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
+    final url = 'http://192.168.43.32:8000/example/$sen_num';
     DownloadService downloadService =
-    kIsWeb ? WebDownloadService() : MobileDownloadService();
+        kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
 
     Dio dio = Dio();
@@ -636,10 +669,24 @@ class _AudioSessionState extends State<AudioSession> {
     player.play('${dir.path}/$fileName');
   }
 
+  Future<void> sen_play(int num) async {
+    print('Speech $num');
+
+    final url = 'http://192.168.43.32:8000/example/$num';
+    DownloadService downloadService =
+        kIsWeb ? WebDownloadService() : MobileDownloadService();
+    await downloadService.download(url: url);
+
+    Dio dio = Dio();
+    var dir = await getApplicationDocumentsDirectory();
+    String fileName = 'example';
+    player.play('${dir.path}/$fileName');
+    sen_num = num;
+  }
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
+    var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('file',
         '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
@@ -653,7 +700,7 @@ class _AudioSessionState extends State<AudioSession> {
   }
 
   Future getPosts() async {
-    var url = 'http://172.20.10.10:8000/result/$sen_num';
+    var url = 'http://192.168.43.32:8000/result/$sen_num';
     final client = HttpClient();
     final request = await client.getUrl(Uri.parse(url));
     var response = await request.close();
@@ -686,7 +733,7 @@ class _AudioSessionState extends State<AudioSession> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const ListTile(
-                          title: Text('辨識結果：',
+                          title: Text('內容比對結果：',
                               style: TextStyle(fontWeight: FontWeight.bold))),
                       Expanded(
                         child: ListView.builder(
@@ -739,6 +786,68 @@ class _AudioSessionState extends State<AudioSession> {
             },
           ),
         );
+      },
+    );
+  }
+
+  FutureBuilder show2() {
+    return FutureBuilder(
+      future: getPosts(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.hasData) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const ListTile(
+                  title: Text('相似匹配度：',
+                      style: TextStyle(fontWeight: FontWeight.bold))),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int num) {
+                      var ratio = snapshot.data[num];
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            ratio,
+                            style: TextStyle(fontSize: 25),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      );
+                    }),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text("關閉",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20))),
+                ],
+              ),
+            ],
+          );
+        } else {
+          return Container(
+            width: 50,
+            height: 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                CircularProgressIndicator(),
+                SizedBox(
+                  height: 10,
+                  width: 10,
+                ),
+              ],
+            ),
+          );
+        }
       },
     );
   }
