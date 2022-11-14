@@ -19,7 +19,7 @@ def ran():
     while True:
         b = random.choice('1234567890')
         c = random.choice('1234567890')
-        if (int(b) * 10 + int(c) < 76) | (int(b) * 10 + int(c) == 0):
+        if (int(b) * 10 + int(c) != 70) | (int(b) * 10 + int(c) != 0):
             break
     sum = a + b + c
     dic = {'article_num': sum}
