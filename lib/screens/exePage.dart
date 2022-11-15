@@ -398,178 +398,198 @@ class _AudioSessionState extends State<AudioSession> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(""),
+        title: Text("練習"),
         // automaticallyImplyLeading: false, // not display <- back btn
       ),
-      body: FutureBuilder(
-        future: httpService.getPosts(),
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            List<String> posts = snapshot.data;
-            article_len = posts.length - 2;
-            return Center(
-                child: ListView.builder(
-                    itemCount: posts.length,
-                    itemBuilder: (BuildContext context, int num) {
-                      if(num == 0 || num == posts.length-1)
-                        {
-                          return const Text("");
-                        } else {
-                        var sen = posts[num];
-                        return Center(
-                          child: TextButton(
-                            onPressed: () => {sen_play(num)},
-                            child: Text("$num  $sen",
-                                textAlign: TextAlign.center,
-                                style:
-                                TextStyle(fontSize: 25,
-                                    color: Colors.black,
-                                )
-                            ),
-                          ),
-                        );
-                      }
-                    }));
-          } else {
-            return Center(child: Text("No Data."));
-          }
-        },
-      ),
-      bottomNavigationBar: Container(
-        height: 500,
-        // padding: const EdgeInsets.only(top: 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              // player
-              children: [
-                const Text(
-                    "當前句子編號：\n",
-                  style:
-                  TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                SenNumState(SenNumKey),
-              ],
+      body: Column(
+        children: [
+          SizedBox(
+            height: 750,
+            child: FutureBuilder(
+              future: httpService.getPosts(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  List<String> posts = snapshot.data;
+                  article_len = posts.length - 2;
+                  return Center(
+                      child: ListView.builder(
+                          itemCount: posts.length,
+                          itemBuilder: (BuildContext context, int num) {
+                            if(num == 0 || num == posts.length-1)
+                            {
+                              return const Text("");
+                            } else {
+                              var sen = posts[num];
+                              return Center(
+                                child: TextButton(
+                                  onPressed: () => {sen_play(num)},
+                                  child: Text("$num  $sen",
+                                      textAlign: TextAlign.center,
+                                      style:
+                                      TextStyle(fontSize: 25,
+                                        color: Colors.black,
+                                      )
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+                      )
+                  );
+                } else {
+                  return Center(child: Text("No Data."));
+                }
+              },
             ),
-            const SizedBox(
-              height: 50,
-            ),
-            Row(
+          ),
+          Container(
+            height: 200,
+            // padding: const EdgeInsets.only(top: 10.0),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Column(
-                  // player
-                  children: [
-                    Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.white,
-                        shape: CircleBorder(),
+                SizedBox(
+                  width: 190,
+                  child:
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "當前句子編號：\n",
+                            style:
+                            TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold
+                            ),
+                          ),
+                          SenNumState(SenNumKey),
+                        ],
                       ),
-                      child: IconButton(
-                        iconSize: 38,
-                        color: Colors.blueAccent,
-                        onPressed: previous,
-                        icon: const Icon(Icons.skip_previous),
-                      ),
-                    ),
-                    Text(
-                      'Previous',
-                      style:
-                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                    ),
-                  ],
                 ),
-                Column(
-                  // player
-                  children: [
-                    Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.white,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        iconSize: 38,
-                        color: Colors.blueAccent,
-                        onPressed: play,
-                        icon: const Icon(Icons.headphones_outlined),
-                      ),
+                Expanded(
+                    child:
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              // player
+                              children: [
+                                Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 38,
+                                    color: Colors.blueAccent,
+                                    onPressed: previous,
+                                    icon: const Icon(Icons.skip_previous),
+                                  ),
+                                ),
+                                Text(
+                                  'Previous',
+                                  style:
+                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              // player
+                              children: [
+                                Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 38,
+                                    color: Colors.blueAccent,
+                                    onPressed: play,
+                                    icon: const Icon(Icons.headphones_outlined),
+                                  ),
+                                ),
+                                Text(
+                                  'Play',
+                                  style:
+                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              // player
+                              children: [
+                                Ink(
+                                  decoration: const ShapeDecoration(
+                                    color: Colors.white,
+                                    shape: CircleBorder(),
+                                  ),
+                                  child: IconButton(
+                                    iconSize: 38,
+                                    color: Colors.blueAccent,
+                                    onPressed: next,
+                                    icon: const Icon(Icons.skip_next),
+                                  ),
+                                ),
+                                Text(
+                                  'Next',
+                                  style:
+                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                //Recorder
+                                children: [
+                                  //kIsWeb ? Container() : futureCodecSelect,
+                                  recorderSection, // recording
+                                ],
+                              ),
+                              Column(
+                                //Record Player
+                                children: [
+                                  //kIsWeb ? Container() : futureCodecSelect,
+                                  playerSection, // recordPlayer
+                                ],
+                              ),
+                              Column(
+                                  children: [
+                                    IconButton(
+                                      iconSize: 38,
+                                      color: Colors.blueAccent,
+                                      onPressed: _uploadFile,
+                                      icon: const Icon(Icons.publish),
+                                    ),
+                                    Text(
+                                      "比對",
+                                      style:
+                                      TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                                    ),
+                                  ]
+                              ),
+
+                            ]),
+                      ],
                     ),
-                    Text(
-                      'Play',
-                      style:
-                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                    ),
-                  ],
-                ),
-                Column(
-                  // player
-                  children: [
-                    Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.white,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        iconSize: 38,
-                        color: Colors.blueAccent,
-                        onPressed: next,
-                        icon: const Icon(Icons.skip_next),
-                      ),
-                    ),
-                    Text(
-                      'Next',
-                      style:
-                          TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                    ),
-                  ],
                 ),
               ],
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Column(
-                    //Recorder
-                    children: [
-                      //kIsWeb ? Container() : futureCodecSelect,
-                      recorderSection, // recording
-                    ],
-                  ),
-                  Column(
-                    //Record Player
-                    children: [
-                      //kIsWeb ? Container() : futureCodecSelect,
-                      playerSection, // recordPlayer
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        iconSize: 38,
-                        color: Colors.blueAccent,
-                        onPressed: _uploadFile,
-                        icon: const Icon(Icons.publish),
-                      ),
-                      Text(
-                        "比對",
-                        style:
-                        TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                      ),
-                    ]
-                  ),
-
-                ]),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -683,24 +703,92 @@ class _AudioSessionState extends State<AudioSession> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const ListTile(
-                          title: Text('內容比對結果：',
-                              style: TextStyle(fontWeight: FontWeight.bold))),
+                          title: Text('測驗結果：',
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold
+                              ),
+                          ),
+                      ),
                       Expanded(
                         child: ListView.builder(
                             itemCount: snapshot.data.length,
                             itemBuilder: (BuildContext context, int num) {
-                              var ratio = snapshot.data[num];
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    ratio,
-                                    style: TextStyle(fontSize: 25),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ],
-                              );
+                              if (snapshot.data[3] != "100.0%") {
+                                if (num == 1) {
+                                  var ratio = snapshot.data[num];
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "當前句子內容：",
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,),
+                                      Text(
+                                        ratio,
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                } else if (num == 2) {
+                                  var ratio = snapshot.data[num];
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "當前錄音檔內容：",
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,),
+                                      Text(
+                                        ratio,
+                                        style: TextStyle(fontSize: 18),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                    ],
+                                  );
+                                } else if (num == 3) {
+                                  var ratio = snapshot.data[num];
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        ratio,
+                                        style: TextStyle(fontSize: 30),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Text("");
+                                }
+                              } else {
+                                if (num == 3) {
+                                  var ratio = snapshot.data[num];
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        ratio,
+                                        style: TextStyle(fontSize: 30),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
+                                  );
+                                } else {
+                                  return Text("");
+                                }
+                              }
                             }),
                       ),
                       Row(
