@@ -102,9 +102,12 @@ async def _result(num):
     sen = speech_recognizer.recognize_once_async().get()
     result = sen.text
     print("result = ", result)
-    ratio = match(result, num)
+    ratio = match(result.lower(), num)
     score = str(ratio) + '%'
-    return score
+    index = int(num) - 1
+    ans = list[index]
+    res = "\n" + ans + "\n" + result + "\n" + score + "\n"
+    return res
 
 
 # sen為錄音檔中的文字內容，num為錄音檔對應到的句子編號
@@ -112,7 +115,7 @@ def match(sen, num):
     print("\nmatch : ")
     print(list)
     index = int(num) - 1
-    ans = list[index]
+    ans = list[index].lower()
     ratio = SequenceMatcher(None, sen, ans).ratio()
     score = round(ratio * 100, 2)
     print("ans = ", ans)
