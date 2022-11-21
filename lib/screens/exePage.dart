@@ -11,7 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:project/core/utils/size_utils.dart';
+// import 'package:project/core/utils/size_utils.dart';
 import 'package:project/generated/l10n.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the common part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the player part of flutter_sound
@@ -22,8 +22,8 @@ import '../http_service.dart';
 String _recorderTxt =
     '00:00:00'; // work for all language, no need to translate.
 String _playerTxt = '00:00:00';
-double? _dbLevel; // volume
-bool? _encoderSupported = true; // Optimist, assuming Codec supported
+double _dbLevel; // volume
+bool _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
 Codec _codec = Codec.pcm16WAV;
 
@@ -36,7 +36,7 @@ class AudioSession extends StatefulWidget {
   final int arIndex;
 
   // do we need key?
-  AudioSession({Key? key, required this.arIndex}) : super(key: key);
+  AudioSession({Key key,this.arIndex}) : super(key: key);
   //AudioSession({required this.arIndex});
 
   @override
@@ -53,7 +53,7 @@ class _AudioSessionState extends State<AudioSession> {
   bool recordPlayerClick = true;
 
   bool _isRecording = false; // initial recording status to not recording.
-  String? _path; // file path name, not explicitly initialized = null.
+  String _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
 
   // initial
@@ -110,7 +110,7 @@ class _AudioSessionState extends State<AudioSession> {
       recorderModule.logger.d('startRecorder');
 
       // onProgress is a stream to post recorder status. api: https://tau.canardoux.xyz/tau_api_recorder_on_progress.html
-      fsRecorderSubscription = recorderModule.onProgress!.listen((e) {
+      fsRecorderSubscription = recorderModule.onProgress.listen((e) {
         var date = DateTime.fromMillisecondsSinceEpoch(
             e.duration.inMilliseconds,
             isUtc: true);
@@ -193,8 +193,8 @@ class _AudioSessionState extends State<AudioSession> {
     }
   }//end of startStopRecorder
 
-  void Function()? onStartRecorderPressed() {
-    if (!_encoderSupported!)
+  void Function() onStartRecorderPressed() {
+    if (!_encoderSupported)
       return null; // null: disable the button when selected codec not supported
     return startStopRecorder;
   }//end of onStartRecorderPressed
@@ -202,7 +202,7 @@ class _AudioSessionState extends State<AudioSession> {
   /// record player
   void _addListeners() {
     fsCancelPlayerSubscriptions();
-    fsPlayerSubscription = playerModule.onProgress!.listen((e) {
+    fsPlayerSubscription = playerModule.onProgress.listen((e) {
       fsMaxDuration = e.duration.inMilliseconds.toDouble();
       if (fsMaxDuration <= 0) fsMaxDuration = 0.0;
 
@@ -225,9 +225,9 @@ class _AudioSessionState extends State<AudioSession> {
 
   Future<void> startPlayer() async {
     try {
-      String? audioFilePath;
+      String audioFilePath;
 
-      if (kIsWeb || await File(_path!).exists() ) { // if not web, check file exists?
+      if (kIsWeb || await File(_path).exists() ) { // if not web, check file exists?
         audioFilePath = _path;
         print(audioFilePath);
       }
@@ -256,7 +256,7 @@ class _AudioSessionState extends State<AudioSession> {
       await playerModule.stopPlayer();
       playerModule.logger.d('stopPlayer');
       if (fsPlayerSubscription != null) {
-        await fsPlayerSubscription!.cancel();
+        await fsPlayerSubscription.cancel();
         fsPlayerSubscription = null;
       }
       fsSliderCurrentPosition = 0.0;
@@ -281,13 +281,13 @@ class _AudioSessionState extends State<AudioSession> {
   }// end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
-  void Function()? onStartPauseResumePlayerPressed() {
+  void Function() onStartPauseResumePlayerPressed() {
     if (playerModule.isStopped) return startPlayer;
     if (playerModule.isPaused || playerModule.isPlaying)
       return pauseResumePlayer;
   }//end of onStartPauseResumePlayerPressed
 
-  void Function()? onStopPlayerPressed() {
+  void Function() onStopPlayerPressed() {
     return (playerModule.isPlaying || playerModule.isPaused)
         ? stopPlayer
         : null;
@@ -452,139 +452,139 @@ class _AudioSessionState extends State<AudioSession> {
                 SizedBox(
                   width: 190,
                   child:
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "當前句子編號：\n",
-                            style:
-                            TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                          SenNumState(SenNumKey),
-                        ],
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        "當前句子編號：\n",
+                        style:
+                        TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
+                        ),
                       ),
+                      SenNumState(SenNumKey),
+                    ],
+                  ),
                 ),
                 Expanded(
-                    child:
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
+                  child:
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            // player
+                            children: [
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  iconSize: 38,
+                                  color: Colors.blueAccent,
+                                  onPressed: previous,
+                                  icon: const Icon(Icons.skip_previous),
+                                ),
+                              ),
+                              Text(
+                                'Previous',
+                                style:
+                                TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            // player
+                            children: [
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  iconSize: 38,
+                                  color: Colors.blueAccent,
+                                  onPressed: play,
+                                  icon: const Icon(Icons.headphones_outlined),
+                                ),
+                              ),
+                              Text(
+                                'Play',
+                                style:
+                                TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            // player
+                            children: [
+                              Ink(
+                                decoration: const ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  iconSize: 38,
+                                  color: Colors.blueAccent,
+                                  onPressed: next,
+                                  icon: const Icon(Icons.skip_next),
+                                ),
+                              ),
+                              Text(
+                                'Next',
+                                style:
+                                TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
-                              // player
+                              //Recorder
                               children: [
-                                Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    iconSize: 38,
-                                    color: Colors.blueAccent,
-                                    onPressed: previous,
-                                    icon: const Icon(Icons.skip_previous),
-                                  ),
-                                ),
-                                Text(
-                                  'Previous',
-                                  style:
-                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                                ),
+                                //kIsWeb ? Container() : futureCodecSelect,
+                                recorderSection, // recording
                               ],
                             ),
                             Column(
-                              // player
+                              //Record Player
                               children: [
-                                Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
-                                    iconSize: 38,
-                                    color: Colors.blueAccent,
-                                    onPressed: play,
-                                    icon: const Icon(Icons.headphones_outlined),
-                                  ),
-                                ),
-                                Text(
-                                  'Play',
-                                  style:
-                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                                ),
+                                //kIsWeb ? Container() : futureCodecSelect,
+                                playerSection, // recordPlayer
                               ],
                             ),
                             Column(
-                              // player
-                              children: [
-                                Ink(
-                                  decoration: const ShapeDecoration(
-                                    color: Colors.white,
-                                    shape: CircleBorder(),
-                                  ),
-                                  child: IconButton(
+                                children: [
+                                  IconButton(
                                     iconSize: 38,
                                     color: Colors.blueAccent,
-                                    onPressed: next,
-                                    icon: const Icon(Icons.skip_next),
+                                    onPressed: _uploadFile,
+                                    icon: const Icon(Icons.publish),
                                   ),
-                                ),
-                                Text(
-                                  'Next',
-                                  style:
-                                  TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                                ),
-                              ],
+                                  Text(
+                                    "比對",
+                                    style:
+                                    TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
+                                  ),
+                                ]
                             ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                //Recorder
-                                children: [
-                                  //kIsWeb ? Container() : futureCodecSelect,
-                                  recorderSection, // recording
-                                ],
-                              ),
-                              Column(
-                                //Record Player
-                                children: [
-                                  //kIsWeb ? Container() : futureCodecSelect,
-                                  playerSection, // recordPlayer
-                                ],
-                              ),
-                              Column(
-                                  children: [
-                                    IconButton(
-                                      iconSize: 38,
-                                      color: Colors.blueAccent,
-                                      onPressed: _uploadFile,
-                                      icon: const Icon(Icons.publish),
-                                    ),
-                                    Text(
-                                      "比對",
-                                      style:
-                                      TextStyle(color: Colors.blueAccent.withOpacity(0.8)),
-                                    ),
-                                  ]
-                              ),
 
-                            ]),
-                      ],
-                    ),
+                          ]),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -623,7 +623,7 @@ class _AudioSessionState extends State<AudioSession> {
   Future<void> play() async {
     print('Speech $sen_num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
+    final url = 'http://192.168.43.32:8000/example/$sen_num';
     DownloadService downloadService =
         kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -640,7 +640,7 @@ class _AudioSessionState extends State<AudioSession> {
     sen_num = num;
     print('Speech $sen_num');
 
-    final url = 'http://172.20.10.10:8000/example/$sen_num';
+    final url = 'http://192.168.43.32:8000/example/$sen_num';
     DownloadService downloadService =
     kIsWeb ? WebDownloadService() : MobileDownloadService();
     await downloadService.download(url: url);
@@ -656,7 +656,7 @@ class _AudioSessionState extends State<AudioSession> {
 
   void _uploadFile() async {
     //TODO replace the url bellow with you ipv4 address in ipconfig
-    var uri = Uri.parse('http://172.20.10.10:8000/recorder/$sen_num');
+    var uri = Uri.parse('http://192.168.43.32:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath('file',
         '/storage/emulated/0/Android/data/com.example.project/files/Audio$sen_num${ext[_codec.index]}'));
@@ -670,7 +670,7 @@ class _AudioSessionState extends State<AudioSession> {
   }
 
   Future getPosts() async {
-    var url = 'http://172.20.10.10:8000/result/$sen_num';
+    var url = 'http://192.168.43.32:8000/result/$sen_num';
     final client = HttpClient();
     final request = await client.getUrl(Uri.parse(url));
     var response = await request.close();

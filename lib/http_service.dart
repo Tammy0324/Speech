@@ -26,19 +26,19 @@ class Connect {
 }
 
 abstract class DownloadService {
-  Future<void> download({required String url});
+  Future<void> download({String url});
 }
 
 class WebDownloadService implements DownloadService {
   @override
-  Future<void> download({required String url}) async {
+  Future<void> download({ String url}) async {
     html.window.open(url, "_blank");
   }
 }
 
 class MobileDownloadService implements DownloadService {
   @override
-  Future<void> download({required String url}) async {
+  Future<void> download({ String url}) async {
     bool hasPermission = await _requestWritePermission();
     if (!hasPermission) return;
 

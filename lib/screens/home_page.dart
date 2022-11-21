@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project/generated/l10n.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key, required this.title}): super(key: key);
+  HomePage({Key key,  this.title}): super(key: key);
 
   final String title;
 
@@ -14,7 +14,7 @@ class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _openDrawer() {
-    _scaffoldKey.currentState!.openDrawer();
+    _scaffoldKey.currentState.openDrawer();
   } // _openDrawer()
 
   void _closeDrawer() {
@@ -58,11 +58,11 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               ListTile(
-                title: Text('單字卡',
+                title: Text('單字查詢',
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20.0),),
-                // onTap: () {
-                //   Navigator.pushNamed(context, '/audio',arguments: 0);
-                // },
+                onTap: () {
+                  Navigator.pushNamed(context, '/search',arguments: 0);
+                },
                 trailing: Icon(
                   Icons.play_arrow,
                   color: Colors.blueAccent,

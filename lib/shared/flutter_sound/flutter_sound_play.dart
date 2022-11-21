@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart';
 
-StreamSubscription? fsPlayerSubscription;
+StreamSubscription fsPlayerSubscription;
 FlutterSoundPlayer playerModule = FlutterSoundPlayer(logLevel: fsLogLevel);
 
 // initial player & subscript status
@@ -22,7 +22,7 @@ Future<void> fsInitializePlayer(bool withUI) async {
 // cancel player status subscription
 void fsCancelPlayerSubscriptions() {
   if (fsPlayerSubscription != null) {
-    fsPlayerSubscription!.cancel();
+    fsPlayerSubscription.cancel();
     fsPlayerSubscription = null;
   }
 }

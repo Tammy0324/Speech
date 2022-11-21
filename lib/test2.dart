@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
     return Center(
         child: Column(
           children: <Widget>[
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
               },
               child: Text('練習'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
               },
               child: Text('測驗'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -55,7 +55,7 @@ class HomePage extends StatelessWidget {
               },
               child: Text('單字卡'),
             ),
-            RaisedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                     context,
@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
 //使exePage可以使用setState函式（暫無用）
 // class exePageState extends StatefulWidget {
 //   @override
-//   exePage createState() => exePage();
+//   exePage createState() => exePage();2
 // }
 
 class exePage extends StatelessWidget {

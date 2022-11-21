@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:project/screens/ariticlePage.dart';
+import 'package:project/screens/dictionary.dart';
 import 'package:project/screens/exePage.dart';
+import 'package:project/screens/home1_page_screen.dart';
 import 'package:project/screens/home_page.dart';
-import 'package:project/screens/new_audio.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:project/generated/l10n.dart';
 import 'dart:async';
 
 import 'package:project/screens/testexepage.dart';
+import 'package:project/screens/welcome.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,10 +34,13 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => HomePage(title:'主頁'),
+        '/': (context) => WelcomePage(),
+        //'/home': (context) => HomePage(title:'主頁'),
+        '/home': (context) => Home1PageScreen(title:'主頁'),
         '/article': (context) => Article(),
-        '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
-        '/new_audio': (context) =>AudioSession1(arIndex: (ModalRoute.of(context)!.settings.arguments as int)),
+        '/audio': (context) => AudioSession(arIndex: (ModalRoute.of(context)?.settings.arguments as int)),
+        '/new_audio': (context) =>AudioSession1(arIndex: (ModalRoute.of(context)?.settings.arguments as int)),
+        '/words': (context) => DictionaryPage(),
         // '/new_audio': (context) => NewAudio(), // 錄放音功能畫面
       },
     );

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart';
 
-StreamSubscription? fsRecorderSubscription;
+StreamSubscription fsRecorderSubscription;
 FlutterSoundRecorder recorderModule = FlutterSoundRecorder(logLevel: fsLogLevel);
 
 // initial Recording & subscript status
@@ -19,7 +19,7 @@ Future<void> fsInitializeRecorder() async {
 // cancel recorder status subscription
 void fsCancelRecorderSubscriptions() {
   if (fsRecorderSubscription != null) {
-    fsRecorderSubscription!.cancel();
+    fsRecorderSubscription.cancel();
     fsRecorderSubscription = null;
   }
 }

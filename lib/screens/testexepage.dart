@@ -24,10 +24,10 @@ import 'package:http/http.dart' as http;
 /// Happy recorder - record audio into FILE only.
 String _recorderTxt = '00:00:00'; // work for all language, no need to translate.
 String _playerTxt = '00:00:00';
-double? _dbLevel; // volume
-bool? _encoderSupported = true; // Optimist, assuming Codec supported
+double _dbLevel; // volume
+bool _encoderSupported = true; // Optimist, assuming Codec supported
 bool _decoderSupported = true; // Optimist, assuming Codec supported
-double? _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
+double _duration; // Estimated audio length, uses FFmpeg, just an estimation, based on the Codec used and the sample rate.
 Codec _codec = FSAudioPlatform().defaultCodec; /// codec default, set via flutter_sound_audio_platform_xxx, safari(MP4)/non-safari(WebM)/non-Web(pcm16WAV)
 /// set the file name, later will allow user input
 const String defaultFileName = "Audio";
@@ -36,7 +36,7 @@ class AudioSession1 extends StatefulWidget {
   final int arIndex;
 
   // do we need key?
-  AudioSession1({Key? key, required this.arIndex}) : super(key: key);
+  AudioSession1({Key key,  this.arIndex}) : super(key: key);
   //AudioSession({required this.arIndex});
 
   @override
@@ -51,9 +51,9 @@ class _AudioSessionState extends State<AudioSession1> {
   bool recordPlayerClick = true;
 
   bool _isRecording = false; // initial recording status to not recording.
-  String? _path; // file path name, not explicitly initialized = null.
+  String _path; // file path name, not explicitly initialized = null.
   String _recMsg = ""; // recoding message or audio file name.
-  Future<List<Codec>>? _supportedCodec; // used future builder
+  Future<List<Codec>> _supportedCodec; // used future builder
 
 
   // initial
@@ -111,7 +111,7 @@ class _AudioSessionState extends State<AudioSession1> {
       recorderModule.logger.d('startRecorder *happy*');
 
       // onProgress is a stream to post recorder status. api: https://tau.canardoux.xyz/tau_api_recorder_on_progress.html
-      fsRecorderSubscription = recorderModule.onProgress!.listen((e) {
+      fsRecorderSubscription = recorderModule.onProgress.listen((e) {
         var date = DateTime.fromMillisecondsSinceEpoch(
             e.duration.inMilliseconds,
             isUtc: true);
@@ -183,7 +183,7 @@ class _AudioSessionState extends State<AudioSession1> {
     setState(() {});
   }//end of pauseResumeRecorder
 
-  void Function()? onPauseResumeRecorderPressed() {
+  void Function() onPauseResumeRecorderPressed() {
     if (recorderModule.isPaused || recorderModule.isRecording) {
       return pauseResumeRecorder;
     }
@@ -198,8 +198,8 @@ class _AudioSessionState extends State<AudioSession1> {
     }
   }//end of startStopRecorder
 
-  void Function()? onStartRecorderPressed() {
-    if (!_encoderSupported!) return null; // null: disable the button when selected codec not supported
+  void Function() onStartRecorderPressed() {
+    if (!_encoderSupported) return null; // null: disable the button when selected codec not supported
     return startStopRecorder;
   }//end of onStartRecorderPressed
 
@@ -224,7 +224,7 @@ class _AudioSessionState extends State<AudioSession1> {
   /// record player
   void _addListeners() {
     fsCancelPlayerSubscriptions();
-    fsPlayerSubscription = playerModule.onProgress!.listen((e) {
+    fsPlayerSubscription = playerModule.onProgress.listen((e) {
       fsMaxDuration = e.duration.inMilliseconds.toDouble();
       if (fsMaxDuration <= 0) fsMaxDuration = 0.0;
 
@@ -245,9 +245,9 @@ class _AudioSessionState extends State<AudioSession1> {
 
   Future<void> startPlayer() async {
     try {
-      String? audioFilePath;
+      String audioFilePath;
 
-      if (kIsWeb || await File(_path!).exists() ) { // if not web, check file exists?
+      if (kIsWeb || await File(_path).exists() ) { // if not web, check file exists?
         audioFilePath = _path;
         print(audioFilePath);
       }
@@ -276,7 +276,7 @@ class _AudioSessionState extends State<AudioSession1> {
       await playerModule.stopPlayer();
       playerModule.logger.d('stopPlayer');
       if (fsPlayerSubscription != null) {
-        await fsPlayerSubscription!.cancel();
+        await fsPlayerSubscription.cancel();
         fsPlayerSubscription = null;
       }
       fsSliderCurrentPosition = 0.0;
@@ -300,7 +300,7 @@ class _AudioSessionState extends State<AudioSession1> {
   }// end of pauseResumePlayer
 
   /// start/pause/resume Player 3-in-1
-  void Function()? onStartPauseResumePlayerPressed() {
+  void Function() onStartPauseResumePlayerPressed() {
     if (_path == null) return null; // no file, not able play, disable btn
     // selected codec is not supported, disable btn
     /// why force Codec.pcm16 always = enabled?
@@ -311,7 +311,7 @@ class _AudioSessionState extends State<AudioSession1> {
     return null; // catch all, just disable btn
   }//end of onStartPauseResumePlayerPressed
 
-  void Function()? onStopPlayerPressed() {
+  void Function() onStopPlayerPressed() {
     return (playerModule.isPlaying || playerModule.isPaused)
         ? stopPlayer
         : null;
@@ -379,10 +379,10 @@ class _AudioSessionState extends State<AudioSession1> {
                   DropdownButton<Codec>(
                     value: _codec,
                     underline: Container(height: 0),
-                    style: Theme.of(context).textTheme.bodyText2!
+                    style: Theme.of(context).textTheme.bodyText2
                         .apply(color: Theme.of(context).colorScheme.primary),
                     onChanged: (newCodec) {
-                      setCodec(newCodec!);
+                      setCodec(newCodec);
                       _codec = newCodec;
                       getDuration();
                       setState(() {});
@@ -741,16 +741,16 @@ class _AudioSessionState extends State<AudioSession1> {
   }
 
 
-  List<PlatformFile>? _files;
+  List<PlatformFile> _files;
 
   void _openFileExplorer() async {
     _files = (await FilePicker.platform.pickFiles(
         type: FileType.any,
         allowMultiple: false,
         allowedExtensions: null
-    ))!.files;
+    )).files;
 
-    print('Loaded file path is : ${_files!.first.path}');
+    print('Loaded file path is : ${_files.first.path}');
   }
 
 
@@ -759,7 +759,7 @@ class _AudioSessionState extends State<AudioSession1> {
     var uri = Uri.parse('http://172.20.10.4:8000/recorder/$sen_num');
     var request = http.MultipartRequest('POST', uri);
     request.files.add(await http.MultipartFile.fromPath(
-        'file', _files!.first.path.toString()));
+        'file', _files.first.path.toString()));
     var response = await request.send();
     if (response.statusCode == 200) {
       print('Uploaded ...');
