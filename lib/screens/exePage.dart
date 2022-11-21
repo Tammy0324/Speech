@@ -405,8 +405,8 @@ class _AudioSessionState extends State<AudioSession> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: height * 0.72,
+          Container(
+            height: height-300,
             child: FutureBuilder(
               future: httpService.getPosts(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -445,14 +445,14 @@ class _AudioSessionState extends State<AudioSession> {
             ),
           ),
           Container(
-            height: height * 0.2,
+            height: 200,
             // padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: widght * 0.43,
+                  width: 190,
                   child:
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -547,8 +547,8 @@ class _AudioSessionState extends State<AudioSession> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: height * 0.02,
+                        const SizedBox(
+                          height: 20,
                         ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
