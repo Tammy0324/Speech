@@ -395,6 +395,8 @@ class _AudioSessionState extends State<AudioSession> {
     );
 
     final Connect httpService = Connect();
+    double widght = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
@@ -404,7 +406,7 @@ class _AudioSessionState extends State<AudioSession> {
       body: Column(
         children: [
           SizedBox(
-            height: 750,
+            height: height * 0.72,
             child: FutureBuilder(
               future: httpService.getPosts(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -443,14 +445,14 @@ class _AudioSessionState extends State<AudioSession> {
             ),
           ),
           Container(
-            height: 200,
+            height: height * 0.2,
             // padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 190,
+                  width: widght * 0.43,
                   child:
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -459,8 +461,8 @@ class _AudioSessionState extends State<AudioSession> {
                             "當前句子編號：\n",
                             style:
                             TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                           SenNumState(SenNumKey),
@@ -545,8 +547,8 @@ class _AudioSessionState extends State<AudioSession> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                          height: 20,
+                        SizedBox(
+                          height: height * 0.02,
                         ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -555,14 +557,12 @@ class _AudioSessionState extends State<AudioSession> {
                               Column(
                                 //Recorder
                                 children: [
-                                  //kIsWeb ? Container() : futureCodecSelect,
                                   recorderSection, // recording
                                 ],
                               ),
                               Column(
                                 //Record Player
                                 children: [
-                                  //kIsWeb ? Container() : futureCodecSelect,
                                   playerSection, // recordPlayer
                                 ],
                               ),
