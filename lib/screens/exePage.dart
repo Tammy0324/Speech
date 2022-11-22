@@ -17,6 +17,7 @@ import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the 
 import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the player part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_record.dart'; // the recording part of flutter_sound
 import '../http_service.dart';
+import 'dictionary.dart';
 
 /// Happy recorder - record audio into FILE only.
 String _recorderTxt =
@@ -405,8 +406,8 @@ class _AudioSessionState extends State<AudioSession> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: height * 0.72,
+          Container(
+            height: height-300,
             child: FutureBuilder(
               future: httpService.getPosts(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -425,6 +426,7 @@ class _AudioSessionState extends State<AudioSession> {
                               return Center(
                                 child: TextButton(
                                   onPressed: () => {sen_play(num)},
+                                  onLongPress:()=>{print("123")},
                                   child: Text("$num  $sen",
                                       textAlign: TextAlign.center,
                                       style:
@@ -445,14 +447,14 @@ class _AudioSessionState extends State<AudioSession> {
             ),
           ),
           Container(
-            height:height * 0.2,
+            height:200,
             // padding: const EdgeInsets.only(top: 10.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width:  widght * 0.43,
+                  width:  190,
                   child:
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -482,18 +484,12 @@ class _AudioSessionState extends State<AudioSession> {
                           Column(
                             // player
                             children: [
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
+                                IconButton(
                                   iconSize: 38,
                                   color: Colors.blueAccent,
                                   onPressed: previous,
                                   icon: const Icon(Icons.skip_previous),
                                 ),
-                              ),
                               Text(
                                 'Previous',
                                 style:
@@ -504,18 +500,12 @@ class _AudioSessionState extends State<AudioSession> {
                           Column(
                             // player
                             children: [
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
+                              IconButton(
                                   iconSize: 38,
                                   color: Colors.blueAccent,
                                   onPressed: play,
                                   icon: const Icon(Icons.headphones_outlined),
                                 ),
-                              ),
                               Text(
                                 'Play',
                                 style:
@@ -526,18 +516,12 @@ class _AudioSessionState extends State<AudioSession> {
                           Column(
                             // player
                             children: [
-                              Ink(
-                                decoration: const ShapeDecoration(
-                                  color: Colors.white,
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
+                              IconButton(
                                   iconSize: 38,
                                   color: Colors.blueAccent,
                                   onPressed: next,
                                   icon: const Icon(Icons.skip_next),
                                 ),
-                              ),
                               Text(
                                 'Next',
                                 style:
@@ -547,8 +531,8 @@ class _AudioSessionState extends State<AudioSession> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: height * 0.02,
+                      const SizedBox(
+                        height: 20,
                       ),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
