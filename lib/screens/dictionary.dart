@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:translator/translator.dart';
 
 
 class DictionaryPage extends StatefulWidget {
@@ -20,7 +21,6 @@ class DictionaryPageState extends State<DictionaryPage> {
   Stream _stream;
 
   Timer _debounce;
-
   _search() async {
     if (_controller.text == null || _controller.text.length == 0) {
       _streamController.add(null);
@@ -116,6 +116,7 @@ class DictionaryPageState extends State<DictionaryPage> {
             return ListView.builder(
               itemCount: snapshot.data["definitions"].length,
               itemBuilder: (BuildContext context, int index) {
+                var text =snapshot.data["definitions"][index]["definition"];
                 return ListBody(
                   children: <Widget>[
                     Container(
@@ -133,7 +134,7 @@ class DictionaryPageState extends State<DictionaryPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
-                          snapshot.data["definitions"][index]["definition"]),
+                          text),
                     )
                   ],
                 );

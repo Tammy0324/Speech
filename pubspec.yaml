@@ -55,6 +55,7 @@ dependencies:
   fluttertoast: ^8.0.9
   file_picker: ^5.0.1
   http: ^0.13.5
+  translator: ^0.1.7
 
 dev_dependencies:
   flutter_test:
