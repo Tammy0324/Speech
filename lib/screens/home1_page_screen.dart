@@ -94,7 +94,7 @@ class Home1PageScreenState extends State<Home1PageScreen> {
                               bottom: 35,
                             ),
                             child: TextButton(
-                              child: Text(
+                              child: const Text(
                                 "練習",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,

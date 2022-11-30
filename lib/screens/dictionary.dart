@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:translator/translator.dart';
-
 
 class DictionaryPage extends StatefulWidget {
   @override
@@ -21,6 +19,7 @@ class DictionaryPageState extends State<DictionaryPage> {
   Stream _stream;
 
   Timer _debounce;
+
   _search() async {
     if (_controller.text == null || _controller.text.length == 0) {
       _streamController.add(null);
@@ -116,25 +115,30 @@ class DictionaryPageState extends State<DictionaryPage> {
             return ListView.builder(
               itemCount: snapshot.data["definitions"].length,
               itemBuilder: (BuildContext context, int index) {
-                var text =snapshot.data["definitions"][index]["definition"];
+                var text = snapshot.data["definitions"][index]["definition"];
                 return ListBody(
                   children: <Widget>[
                     Container(
                       color: Colors.grey[300],
                       child: ListTile(
                         leading: snapshot.data["definitions"][index]
-                        ["image_url"] == null ? null
+                                    ["image_url"] ==
+                                null
+                            ? null
                             : CircleAvatar(
-                          backgroundImage: NetworkImage(snapshot
-                              .data["definitions"][index]["image_url"]),
-                        ),
-                        title: Text(_controller.text.trim() + " " + "(" + snapshot.data["definitions"][index]["type"] + ")"),
+                                backgroundImage: NetworkImage(snapshot
+                                    .data["definitions"][index]["image_url"]),
+                              ),
+                        title: Text(_controller.text.trim() +
+                            " " +
+                            "(" +
+                            snapshot.data["definitions"][index]["type"] +
+                            ")"),
                       ),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                          text),
+                      child: Text(text),
                     )
                   ],
                 );
@@ -145,4 +149,82 @@ class DictionaryPageState extends State<DictionaryPage> {
       ),
     );
   }
+
+  show_dic(){
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: FutureBuilder(
+            future: _search(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  constraints: const BoxConstraints(
+                      maxWidth: 300,
+                      maxHeight: 300,
+                      minWidth: 50,
+                      minHeight: 50),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: snapshot.data["definitions"].length,
+                          itemBuilder: (BuildContext context, int index) {
+                            var text = snapshot.data["definitions"][index]["definition"];
+                            return ListBody(
+                              children: <Widget>[
+                                Container(
+                                  color: Colors.grey[300],
+                                  child: ListTile(
+                                    leading: snapshot.data["definitions"][index]
+                                    ["image_url"] ==
+                                        null
+                                        ? null
+                                        : CircleAvatar(
+                                      backgroundImage: NetworkImage(snapshot
+                                          .data["definitions"][index]["image_url"]),
+                                    ),
+                                    title: Text(_controller.text.trim() +
+                                        " " +
+                                        "(" +
+                                        snapshot.data["definitions"][index]["type"] +
+                                        ")"),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(text),
+                                )
+                              ],
+                            );
+                          },),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: const Text("關閉",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20))),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Text("");
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+
 }

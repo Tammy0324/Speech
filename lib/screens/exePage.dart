@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:project/core/utils/size_utils.dart';
 import 'package:project/generated/l10n.dart';
+import 'package:project/screens/showdic.dart';
 import 'package:project/shared/flutter_sound/flutter_sound_common.dart'; // the common part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_play.dart'; // the player part of flutter_sound
 import 'package:project/shared/flutter_sound/flutter_sound_record.dart'; // the recording part of flutter_sound
@@ -426,7 +427,7 @@ class _AudioSessionState extends State<AudioSession> {
                               return Center(
                                 child: TextButton(
                                   onPressed: () => {sen_play(num)},
-                                  onLongPress:()=>{print("123")},
+                                  onLongPress:()=>{ShowDictionaryPage(),print("123")},
                                   child: Text("$num  $sen",
                                       textAlign: TextAlign.center,
                                       style:
@@ -813,6 +814,8 @@ class _AudioSessionState extends State<AudioSession> {
       },
     );
   }
+
+
 }
 
 //封装的widget
